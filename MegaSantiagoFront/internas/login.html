@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MegaSantiago | Acceder / Registrarse</title>
+
+    <!-- CSS global (subimos un nivel) -->
+    <link rel="stylesheet" href="../csss estilos/estilos.css">
+</head>
+<body>
+
+    <!-- BARRA SUPERIOR -->
+    <div class="top-bar">
+        <p>ENCUENTRA DE TODO EN MEGASANTIAGO - OFERTAS DEL MES</p>
+    </div>
+
+    <!-- HEADER SIMPLE -->
+    <header class="main-header">
+        <div class="header-left">
+            <a href="../index.html">
+                <img src="../imagenes/Logo_MegaSantiago.png" alt="MegaSantiago" class="logo-mega">
+            </a>
+        </div>
+
+        <div class="header-center">
+            <h1 class="auth-header-title">Acceder / Registrarse</h1>
+        </div>
+
+        <div class="header-right">
+            <a href="../index.html" class="link-header">← Volver al inicio</a>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="auth-page">
+        <section class="auth-container">
+
+            <!-- COLUMNA: ACCEDER -->
+            <div class="auth-card">
+                <h2>Acceder</h2>
+
+                <form id="formLogin" class="auth-form">
+                    <label for="login-usuario">
+                        Nombre de usuario o correo electrónico <span class="req">*</span>
+                    </label>
+                    <input type="text" id="login-usuario" required>
+
+                    <label for="login-clave">
+                        Contraseña <span class="req">*</span>
+                    </label>
+
+                    <div class="auth-password-wrapper">
+                        <input type="password" id="login-clave" required>
+                        <button type="button" class="btn-eye" data-target="login-clave">👁</button>
+                    </div>
+
+                    <div class="auth-row">
+                        <button type="submit" class="btn-auth-primary">ACCESO</button>
+
+                        <label class="remember-check">
+                            <input type="checkbox">
+                            <span>Recuérdame</span>
+                        </label>
+                    </div>
+
+                    <a href="#" class="auth-link">¿Olvidaste la contraseña?</a>
+                </form>
+            </div>
+
+            <!-- COLUMNA: REGISTRARSE -->
+            <div class="auth-card">
+                <h2>Registrarse</h2>
+
+                <form id="formRegistro" class="auth-form">
+                    <label for="reg-correo">
+                        Dirección de correo electrónico <span class="req">*</span>
+                    </label>
+                    <input type="email" id="reg-correo" required>
+
+                    <label for="reg-clave">
+                        Contraseña <span class="req">*</span>
+                    </label>
+
+                    <div class="auth-password-wrapper">
+                        <input type="password" id="reg-clave" required>
+                        <button type="button" class="btn-eye" data-target="reg-clave">👁</button>
+                    </div>
+
+                    <button type="submit" class="btn-auth-primary">REGISTRARSE</button>
+                </form>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>MegaSantiago © 2025 - Todos los derechos reservados</p>
+    </footer>
+
+    <!-- JS: demo básico -->
+    <script>
+        // Mostrar / ocultar contraseña
+        document.querySelectorAll('.btn-eye').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if (input.type === 'password') {
+                    input.type = 'text';
+                } else {
+                    input.type = 'password';
+                }
+            });
+        });
+
+        // Demo login (sin backend)
+        const formLogin = document.getElementById('formLogin');
+        formLogin.addEventListener('submit', e => {
+            e.preventDefault();
+            const user = document.getElementById('login-usuario').value.trim();
+            const pass = document.getElementById('login-clave').value.trim();
+
+            // Credenciales de prueba
+            const demoUser = 'demo@megasantiago.com';
+            const demoPass = '1234';
+
+            if (user === demoUser && pass === demoPass) {
+                alert('Inicio de sesión correcto (demo).');
+                window.location.href = '../index.html';
+            } else {
+                alert('Usuario o contraseña incorrectos (demo).');
+            }
+        });
+
+        // Demo registro (solo mensaje)
+        const formReg = document.getElementById('formRegistro');
+        formReg.addEventListener('submit', e => {
+            e.preventDefault();
+            alert('Registro de demo realizado. Aquí iría el guardado real en base de datos.');
+        });
+    </script>
+
+</body>
+</html>

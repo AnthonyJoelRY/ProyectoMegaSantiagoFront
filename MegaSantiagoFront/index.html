@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MegaSantiago | Inicio</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="csss estilos/estilos.css">
+</head>
+<body>
+
+    <div class="top-bar">
+        <p>ENCUENTRA DE TODO EN MEGASANTIAGO - OFERTAS DEL MES</p>
+    </div>
+
+    <!-- ENCABEZADO -->
+    <header class="main-header">
+        <div class="header-left">
+            <img src="imagenes/Logo_MegaSantiago.png" alt="MegaSantiago" class="logo-mega">
+        </div>
+
+        <div class="header-center">
+            <div class="search-box">
+                <input id="buscador" type="text" placeholder="Busca tu producto">
+                <button class="btn-search" type="button" onclick="realizarBusqueda()">
+                    <svg width="18" height="18" fill="white" viewBox="0 0 24 24">
+                        <path d="M21 20l-5.8-5.8a7 7 0 10-1.4 1.4L20 21zM5 11a6 6 0 1112 0A6 6 0 015 11z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <a href="internas/login.html" class="link-header">Acceder / Registrarse</a>
+            <a href="internas/carrito.html" class="link-header">🛒 Carrito</a>
+        </div>
+    </header>
+
+    <!-- NAV PRINCIPAL -->
+    <nav class="nav-principal">
+        <ul class="menu">
+            <li class="menu-item has-mega"><a href="internas/bazar.html">BAZAR ▾</a></li>
+            <li class="menu-item has-sub"><a href="internas/papeleria.html">PAPELERÍA ▾</a></li>
+            <li class="menu-item has-sub"><a href="internas/productos-arte.html">PRODUCTOS DE ARTE ▾</a></li>
+            <li class="menu-item has-mega"><a href="internas/suministros-oficina.html">SUMINISTROS DE OFICINA ▾</a></li>
+            <li class="menu-item has-sub"><a href="internas/utiles-escolares.html">ÚTILES ESCOLARES ▾</a></li>
+            <li class="menu-item"><a href="#promociones">PROMOCIONES</a></li>
+        </ul>
+    </nav>
+
+    <!-- BANNER -->
+    <section class="banner-principal">
+        <div class="banner-texto">
+            <h2>OFERTAS ESPECIALES MEGASANTIAGO</h2>
+            <p>Todo para tu oficina y tus clases al mejor precio.</p>
+            <button class="btn-primario" onclick="irPromociones()">Ver promociones</button>
+        </div>
+    </section>
+
+    <!-- PRODUCTOS MÁS VENDIDOS -->
+    <section class="seccion">
+        <h2 class="titulo-seccion">Productos más vendidos</h2>
+
+        <div class="grid-categorias grid-best-sellers">
+            <!-- PRODUCTO 1 -->
+            <article class="card-categoria">
+                <div class="circulo-img">
+                    <img src="imagenes/Cuaderno_universitario_100 hojas.jpg"
+                         alt="Cuaderno universitario 100 hojas">
+                </div>
+                <h3>Cuaderno universitario 100 hojas</h3>
+                <p class="best-price">$2,80 + IVA</p>
+                <button class="btn-best"
+                        data-id="PV001"
+                        data-nombre="Cuaderno universitario 100 hojas"
+                        data-precio="2.80">
+                    Agregar al carrito
+                </button>
+            </article>
+
+            <!-- PRODUCTO 2 -->
+            <article class="card-categoria">
+                <div class="circulo-img">
+                    <img src="imagenes/Pack_12_lápices HB.png"
+                         alt="Pack 12 lápices HB">
+                </div>
+                <h3>Pack 12 lápices HB</h3>
+                <p class="best-price">$2,46 + IVA</p>
+                <button class="btn-best"
+                        data-id="PV002"
+                        data-nombre="Pack 12 lápices HB"
+                        data-precio="2.46">
+                    Agregar al carrito
+                </button>
+            </article>
+
+            <!-- PRODUCTO 3 -->
+            <article class="card-categoria">
+                <div class="circulo-img">
+                    <img src="imagenes/Set_de_marcadores_permanentes.jpg"
+                         alt="Set de marcadores permanentes">
+                </div>
+                <h3>Set de marcadores permanentes</h3>
+                <p class="best-price">$4,50 + IVA</p>
+                <button class="btn-best"
+                        data-id="PV003"
+                        data-nombre="Set de marcadores permanentes"
+                        data-precio="4.50">
+                    Agregar al carrito
+                </button>
+            </article>
+
+            <!-- PRODUCTO 4 -->
+            <article class="card-categoria">
+                <div class="circulo-img">
+                    <img src="imagenes/Mochila_escolar_básica.jpg"
+                         alt="Mochila escolar básica">
+                </div>
+                <h3>Mochila escolar básica</h3>
+                <p class="best-price">$18,50 + IVA</p>
+                <button class="btn-best"
+                        data-id="PV004"
+                        data-nombre="Mochila escolar básica"
+                        data-precio="18.50">
+                    Agregar al carrito
+                </button>
+            </article>
+        </div>
+    </section>
+
+    <!-- PRODUCTOS DESTACADOS -->
+    <section class="seccion">
+        <h2 class="titulo-seccion">Ofertas MegaSantiago</h2>
+
+        <div class="carrusel-productos">
+            <!-- Producto 1 -->
+            <article class="card-producto"
+                     data-id="P001"
+                     data-nombre="Cuaderno universitario 100 hojas"
+                     data-precio="2.80">
+                <span class="descuento">-20%</span>
+
+                <div class="img-producto">
+                    <img src="imagenes/Cuaderno_universitario_100 hojas.jpg"
+                         alt="Cuaderno universitario 100 hojas">
+                </div>
+
+                <p class="nombre-producto">Cuaderno universitario 100 hojas</p>
+                <p class="precio-anterior">$3,50</p>
+                <p class="precio-actual">$2,80</p>
+                <button class="btn-add">+</button>
+            </article>
+
+            <!-- Producto 2 -->
+            <article class="card-producto"
+                     data-id="P002"
+                     data-nombre="Pack 12 lápices HB"
+                     data-precio="2.46">
+                <span class="descuento">-15%</span>
+
+                <div class="img-producto">
+                    <img src="imagenes/Pack_12_lápices HB.png"
+                         alt="Pack 12 lápices HB">
+                </div>
+
+                <p class="nombre-producto">Pack 12 lápices HB</p>
+                <p class="precio-anterior">$2,90</p>
+                <p class="precio-actual">$2,46</p>
+                <button class="btn-add">+</button>
+            </article>
+
+            <!-- Producto 3 -->
+            <article class="card-producto"
+                     data-id="P003"
+                     data-nombre="Set de marcadores permanentes"
+                     data-precio="4.50">
+                <span class="descuento">-10%</span>
+
+                <div class="img-producto">
+                    <img src="imagenes/Set_de_marcadores_permanentes.jpg"
+                         alt="Set de marcadores permanentes">
+                </div>
+
+                <p class="nombre-producto">Set de marcadores permanentes</p>
+                <p class="precio-anterior">$5,00</p>
+                <p class="precio-actual">$4,50</p>
+                <button class="btn-add">+</button>
+            </article>
+        </div>
+    </section>
+
+    <!-- SECCIÓN PROMOCIONES -->
+    <section id="promociones" class="seccion">
+        <h2 class="titulo-seccion">Promociones especiales</h2>
+
+        <div class="carrusel-productos">
+            <!-- Promo 1 -->
+            <article class="card-producto"
+                     data-id="PR001"
+                     data-nombre="Pack escolar completo"
+                     data-precio="9.90">
+                <span class="descuento">-30%</span>
+
+                <div class="img-producto"
+                     style="background-image:url('imagenes/Pack_escolar_completo.jpeg');
+                            background-size:cover;
+                            background-position:center;">
+                </div>
+
+                <p class="nombre-producto">Pack escolar completo</p>
+                <p class="precio-anterior">$14,20</p>
+                <p class="precio-actual">$9,90</p>
+                <button class="btn-add">+</button>
+            </article>
+
+            <!-- Promo 2 -->
+            <article class="card-producto"
+                     data-id="PR002"
+                     data-nombre="Kit de marcadores surtidos"
+                     data-precio="6.50">
+                <span class="descuento">-25%</span>
+
+                <div class="img-producto"
+                     style="background-image:url('imagenes/Kit_de_marcadores_surtidos.jpg');
+                            background-size:cover;
+                            background-position:center;">
+                </div>
+
+                <p class="nombre-producto">Kit de marcadores surtidos</p>
+                <p class="precio-anterior">$8,70</p>
+                <p class="precio-actual">$6,50</p>
+                <button class="btn-add">+</button>
+            </article>
+
+            <!-- Promo 3 -->
+            <article class="card-producto"
+                     data-id="PR003"
+                     data-nombre="Combo hojas + carpetas"
+                     data-precio="4.75">
+                <span class="descuento">-20%</span>
+
+                <div class="img-producto"
+                     style="background-image:url('imagenes/Combo_hojas_+_carpetas.jpg');
+                            background-size:cover;
+                            background-position:center;">
+                </div>
+
+                <p class="nombre-producto">Combo hojas + carpetas</p>
+                <p class="precio-anterior">$5,95</p>
+                <p class="precio-actual">$4,75</p>
+                <button class="btn-add">+</button>
+            </article>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>MegaSantiago © 2025 - Todos los derechos reservados</p>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        /* ========= BÚSQUEDA GLOBAL ========= */
+        function realizarBusqueda() {
+            const valor = document.getElementById("buscador").value.trim();
+            if (!valor) return;
+            window.location.href = "busqueda.html?q=" + encodeURIComponent(valor);
+        }
+
+        document.getElementById("buscador").addEventListener("keyup", e => {
+            if (e.key === "Enter") realizarBusqueda();
+        });
+
+        /* ========= CARRITO ========= */
+        function obtenerCarrito() {
+            return JSON.parse(localStorage.getItem("carritoMega") || "[]");
+        }
+
+        function guardarCarrito(carrito) {
+            localStorage.setItem("carritoMega", JSON.stringify(carrito));
+        }
+
+        function agregarAlCarrito(id, nombre, precio) {
+            let carrito = obtenerCarrito();
+            const existe = carrito.find(p => p.id === id);
+
+            if (existe) existe.cantidad++;
+            else carrito.push({ id, nombre, precio, cantidad: 1 });
+
+            guardarCarrito(carrito);
+        }
+
+        // botones de “más vendidos”
+        document.querySelectorAll(".btn-best").forEach(btn => {
+            btn.addEventListener("click", () => {
+                agregarAlCarrito(
+                    btn.dataset.id,
+                    btn.dataset.nombre,
+                    parseFloat(btn.dataset.precio)
+                );
+                alert("Producto agregado al carrito");
+            });
+        });
+
+        // botones de cards con +
+        document.querySelectorAll(".btn-add").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const card = btn.closest(".card-producto");
+                agregarAlCarrito(
+                    card.dataset.id,
+                    card.dataset.nombre,
+                    parseFloat(card.dataset.precio)
+                );
+                alert("Producto agregado al carrito");
+            });
+        });
+
+        /* ========= SCROLL A PROMOCIONES ========= */
+        function irPromociones() {
+            const seccion = document.getElementById("promociones");
+            if (seccion) {
+                seccion.scrollIntoView({ behavior: "smooth" });
+            }
+        }
+    </script>
+
+</body>
+</html>
