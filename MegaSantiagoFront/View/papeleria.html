@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MegaSantiago | Papelería</title>
 
-    <link rel="stylesheet" href="../csss estilos/estilos.css">
+    <!-- CSS desde View → Model -->
+    <link rel="stylesheet" href="../Model/csss estilos/estilos.css">
 </head>
 <body>
 
@@ -18,7 +19,7 @@
     <header class="main-header">
         <div class="header-left">
             <a href="../index.html">
-                <img src="../imagenes/Logo_MegaSantiago.png" alt="MegaSantiago" class="logo-mega">
+                <img src="../Model/imagenes/Logo_MegaSantiago.png" alt="MegaSantiago" class="logo-mega">
             </a>
         </div>
 
@@ -177,7 +178,7 @@
                     <!-- PRODUCTOS CON IMAGEN -->
                     <article class="product-card" data-id="PA001" data-nombre="Cartulina IRIS" data-precio="1.03" data-tipo="cartulina">
                         <div class="product-image">
-                            <img src="../imagenes/Cartulina_IRIS.jpg" alt="Cartulina IRIS">
+                            <img src="../Model/imagenes/Cartulina_IRIS.jpg" alt="Cartulina IRIS">
                         </div>
                         <h3>Cartulina IRIS</h3>
                         <p class="product-price">$1.03 + IVA</p>
@@ -186,7 +187,7 @@
 
                     <article class="product-card" data-id="PA002" data-nombre="Cartón corrugado sencillo" data-precio="0.45" data-tipo="corrugado">
                         <div class="product-image">
-                            <img src="../imagenes/Cartón_corrugado_sencillo.jpg" alt="Cartón corrugado sencillo">
+                            <img src="../Model/imagenes/Cartón_corrugado_sencillo.jpg" alt="Cartón corrugado sencillo">
                         </div>
                         <h3>Cartón corrugado sencillo</h3>
                         <p class="product-price">$0.45 + IVA</p>
@@ -195,7 +196,7 @@
 
                     <article class="product-card" data-id="PA003" data-nombre="Cartulina Bristol blanca A4" data-precio="0.31" data-tipo="cartulina">
                         <div class="product-image">
-                            <img src="../imagenes/Cartulina_Bristol_blanca_A4.jpg" alt="Cartulina Bristol blanca A4">
+                            <img src="../Model/imagenes/Cartulina_Bristol_blanca_A4.jpg" alt="Cartulina Bristol blanca A4">
                         </div>
                         <h3>Cartulina Bristol blanca A4</h3>
                         <p class="product-price">$0.31 + IVA</p>
@@ -204,7 +205,7 @@
 
                     <article class="product-card" data-id="PA004" data-nombre="Cartulina Bristol pliego 70x100" data-precio="0.58" data-tipo="cartulina">
                         <div class="product-image">
-                            <img src="../imagenes/Cartulina_Bristol_pliego_70x100.jpg" alt="Cartulina Bristol pliego 70x100">
+                            <img src="../Model/imagenes/Cartulina_Bristol_pliego_70x100.jpg" alt="Cartulina Bristol pliego 70x100">
                         </div>
                         <h3>Cartulina Bristol pliego 70x100</h3>
                         <p class="product-price">$0.58 + IVA</p>
@@ -273,7 +274,9 @@
 
                     const cumplePrecio = precio <= maxPrecio;
 
-                    card.style.display = (cumpleTipo && cumplePrecio) ? '' : 'none';
+                    card.style.display = (cumpleTipo && cumplePrecio)
+                        ? ''
+                        : 'none';
                 });
             }
 
@@ -310,8 +313,8 @@
         })();
     </script>
 
-    <!-- BUSCADOR GLOBAL -->
-    <script src="../js/busqueda-global.js"></script>
+    <!-- BUSCADOR GLOBAL: View → Model/js -->
+    <script src="../Model/js/busqueda-global.js"></script>
 
 </body>
 </html>

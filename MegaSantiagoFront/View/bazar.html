@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MegaSantiago | Bazar</title>
 
-    <link rel="stylesheet" href="../csss estilos/estilos.css">
+    <!-- CSS (desde View → Model) -->
+    <link rel="stylesheet" href="../Model/csss estilos/estilos.css">
 </head>
 <body>
 
@@ -18,7 +19,8 @@
     <header class="main-header">
         <div class="header-left">
             <a href="../index.html">
-                <img src="../imagenes/Logo_MegaSantiago.png" alt="MegaSantiago" class="logo-mega">
+                <!-- Logo (View → Model/imagenes) -->
+                <img src="../Model/imagenes/Logo_MegaSantiago.png" alt="MegaSantiago" class="logo-mega">
             </a>
         </div>
 
@@ -182,7 +184,7 @@
                              data-nombre="Globo X10 surtido"
                              data-tipo="globos">
                         <div class="product-image">
-                            <img src="../imagenes/Globo_X10_surtido.jpg" alt="Globo X10 surtido">
+                            <img src="../Model/imagenes/Globo_X10_surtido.jpg" alt="Globo X10 surtido">
                         </div>
                         <h3>Globo X10 surtido</h3>
                         <p class="product-price">$0.54 + IVA</p>
@@ -195,7 +197,7 @@
                              data-nombre="Astrobrights 176GR v/c"
                              data-tipo="decoracion">
                         <div class="product-image">
-                            <img src="../imagenes/Astrobrights_176GR_v-c.jpg" alt="Astrobrights 176GR v/c">
+                            <img src="../Model/imagenes/Astrobrights_176GR_v-c.jpg" alt="Astrobrights 176GR v/c">
                         </div>
                         <h3>Astrobrights 176GR v/c</h3>
                         <p class="product-price">$0.18 + IVA</p>
@@ -208,7 +210,7 @@
                              data-nombre="Globo impreso funda x10"
                              data-tipo="globos">
                         <div class="product-image">
-                            <img src="../imagenes/Globo_impreso_funda_x10.png" alt="Globo impreso funda x10">
+                            <img src="../Model/imagenes/Globo_impreso_funda_x10.png" alt="Globo impreso funda x10">
                         </div>
                         <h3>Globo impreso funda x10</h3>
                         <p class="product-price">$1.43 + IVA</p>
@@ -221,7 +223,7 @@
                              data-nombre="Cordón dorado/plata x rollo"
                              data-tipo="decoracion">
                         <div class="product-image">
-                            <img src="../imagenes/Cordón_dorado-plata_x_rollo.jpg" alt="Cordón dorado/plata x rollo">
+                            <img src="../Model/imagenes/Cordón_dorado-plata_x_rollo.jpg" alt="Cordón dorado/plata x rollo">
                         </div>
                         <h3>Cordón dorado/plata x rollo</h3>
                         <p class="product-price">$1.70 + IVA</p>
@@ -327,8 +329,8 @@
         })();
     </script>
 
-    <!-- BUSCADOR GLOBAL -->
-    <script src="../js/busqueda-global.js"></script>
+    <!-- BUSCADOR GLOBAL (View → Model/js) -->
+    <script src="../Model/js/busqueda-global.js"></script>
 
 </body>
 </html>

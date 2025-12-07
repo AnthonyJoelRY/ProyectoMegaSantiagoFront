@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados de búsqueda | MegaSantiago</title>
-    <link rel="stylesheet" href="csss estilos/estilos.css">
+
+    <!-- CSS: desde View → Model -->
+    <link rel="stylesheet" href="../Model/csss estilos/estilos.css">
 </head>
 <body>
 
@@ -15,8 +17,8 @@
     <!-- ENCABEZADO -->
     <header class="main-header">
         <div class="header-left">
-            <a href="index.html">
-                <img src="imagenes/Logo_MegaSantiago.png" alt="MegaSantiago" class="logo-mega">
+            <a href="../index.html">
+                <img src="../Model/imagenes/Logo_MegaSantiago.png" alt="MegaSantiago" class="logo-mega">
             </a>
         </div>
 
@@ -32,8 +34,8 @@
         </div>
 
         <div class="header-right">
-            <a href="internas/login.html" class="link-header">Acceder / Registrarse</a>
-            <a href="internas/carrito.html" class="link-header">🛒 Carrito</a>
+            <a href="login.html" class="link-header">Acceder / Registrarse</a>
+            <a href="carrito.html" class="link-header">🛒 Carrito</a>
         </div>
     </header>
 
@@ -41,27 +43,27 @@
     <nav class="nav-principal">
         <ul class="menu">
             <li class="menu-item has-mega">
-                <a href="internas/bazar.html">BAZAR ▾</a>
+                <a href="bazar.html">BAZAR ▾</a>
             </li>
 
             <li class="menu-item has-sub">
-                <a href="internas/papeleria.html">PAPELERÍA ▾</a>
+                <a href="papeleria.html">PAPELERÍA ▾</a>
             </li>
 
             <li class="menu-item has-sub">
-                <a href="internas/productos-arte.html">PRODUCTOS DE ARTE ▾</a>
+                <a href="productos-arte.html">PRODUCTOS DE ARTE ▾</a>
             </li>
 
             <li class="menu-item has-mega">
-                <a href="internas/suministros-oficina.html">SUMINISTROS DE OFICINA ▾</a>
+                <a href="suministros-oficina.html">SUMINISTROS DE OFICINA ▾</a>
             </li>
 
             <li class="menu-item has-sub">
-                <a href="internas/utiles-escolares.html">ÚTILES ESCOLARES ▾</a>
+                <a href="utiles-escolares.html">ÚTILES ESCOLARES ▾</a>
             </li>
 
             <li class="menu-item">
-                <a href="index.html#promociones">PROMOCIONES</a>
+                <a href="../index.html#promociones">PROMOCIONES</a>
             </li>
         </ul>
     </nav>
@@ -87,8 +89,8 @@
         <p>MegaSantiago © 2025 - Todos los derechos reservados</p>
     </footer>
 
-    <!-- CARGAR LA "BD" GLOBAL DE PRODUCTOS -->
-    <script src="js/productos-data.js"></script>
+    <!-- CARGAR LA "BD" GLOBAL DE PRODUCTOS (View → Model/js) -->
+    <script src="../Model/js/productos-data.js"></script>
 
     <script>
         /* ================== BUSCAR (redirección) ================== */
@@ -162,9 +164,13 @@
                 card.dataset.nombre = p.nombre;
                 card.dataset.precio = p.precio.toFixed(2);
 
-                // Corregir rutas ../imagenes/... para esta página (que está en la raíz)
+                // Ajustar rutas de imágenes a ../Model/imagenes/...
                 let imgSrc = p.imagen || '';
-                imgSrc = imgSrc.replace(/^(\.\.\/)+/,''); // quita ../ del inicio
+                if (imgSrc.startsWith('../imagenes/')) {
+                    imgSrc = imgSrc.replace('../imagenes/', '../Model/imagenes/');
+                } else if (imgSrc.startsWith('imagenes/')) {
+                    imgSrc = '../Model/' + imgSrc;
+                }
 
                 card.innerHTML = `
                     <div class="product-image">
@@ -185,7 +191,7 @@
             });
         }
 
-        // 🔹 Integrado: rellenar buscador + permitir Enter + pintar resultados
+        // 🔹 Rellenar buscador + permitir Enter + pintar resultados
         document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById('buscador');
 

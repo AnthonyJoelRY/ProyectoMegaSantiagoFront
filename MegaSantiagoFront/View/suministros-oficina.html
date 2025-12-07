@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MegaSantiago | Útiles escolares</title>
+    <title>MegaSantiago | Suministros de oficina</title>
 
-    <link rel="stylesheet" href="../csss estilos/estilos.css">
+    <!-- CSS desde View → Model -->
+    <link rel="stylesheet" href="../Model/csss estilos/estilos.css">
 </head>
 <body>
 
@@ -17,7 +18,7 @@
     <header class="main-header">
         <div class="header-left">
             <a href="../index.html">
-                <img src="../imagenes/Logo_MegaSantiago.png" alt="MegaSantiago" class="logo-mega">
+                <img src="../Model/imagenes/Logo_MegaSantiago.png" alt="MegaSantiago" class="logo-mega">
             </a>
         </div>
 
@@ -80,7 +81,7 @@
                 </ul>
             </li>
 
-            <li class="menu-item has-mega">
+            <li class="menu-item has-mega active">
                 <a href="suministros-oficina.html">SUMINISTROS DE OFICINA ▾</a>
                 <div class="mega-menu columnas-2">
                     <div class="col-mega">
@@ -97,7 +98,7 @@
                 </div>
             </li>
 
-            <li class="menu-item has-sub active">
+            <li class="menu-item has-sub">
                 <a href="utiles-escolares.html">ÚTILES ESCOLARES ▾</a>
                 <ul class="submenu">
                     <li><a href="utiles-escolares.html">Mochilas</a></li>
@@ -116,8 +117,8 @@
     <!-- HERO -->
     <section class="category-hero">
         <div class="category-hero-inner">
-            <h1>Útiles escolares</h1>
-            <p>Listo para el regreso a clases: mochilas, cuadernos y más.</p>
+            <h1>Suministros de oficina</h1>
+            <p>Todo para tu escritorio, archivo y área administrativa.</p>
         </div>
     </section>
 
@@ -132,37 +133,41 @@
                     <li><a href="bazar.html">Bazar</a></li>
                     <li><a href="papeleria.html">Papelería</a></li>
                     <li><a href="productos-arte.html">Productos de arte</a></li>
-                    <li><a href="suministros-oficina.html">Suministros de oficina</a></li>
-                    <li class="active"><a href="utiles-escolares.html">Útiles escolares</a></li>
+                    <li class="active"><a href="suministros-oficina.html">Suministros de oficina</a></li>
+                    <li><a href="utiles-escolares.html">Útiles escolares</a></li>
                 </ul>
 
+                <!-- FILTRO TIPO -->
                 <div class="sidebar-block">
                     <h4>Filtrar por</h4>
                     <label class="sidebar-label">Tipo</label>
+
                     <select class="sidebar-select sidebar-select-tipo">
                         <option value="todos">Cualquier tipo</option>
-                        <option value="mochilas">Mochilas</option>
-                        <option value="cuadernos">Cuadernos</option>
-                        <option value="lapiceros">Lapiceros</option>
-                        <option value="colores">Colores</option>
+                        <option value="archivadores">Archivadores</option>
+                        <option value="escritura">Escritura</option>
+                        <option value="organizacion">Organización</option>
                     </select>
                 </div>
 
+                <!-- FILTRO PRECIO -->
                 <div class="sidebar-block">
                     <h4>Filtrar por precio</h4>
-                    <input type="range" min="0" max="90" value="35" class="sidebar-range">
-                    <div class="sidebar-range-info">Precio máx: $35</div>
+                    <input type="range" min="0" max="150" value="60" class="sidebar-range">
+                    <div class="sidebar-range-info">Precio máx: $60</div>
                     <button class="btn-sidebar">FILTRAR</button>
                 </div>
             </aside>
 
             <!-- PRODUCTOS -->
             <section class="category-main">
+
                 <div class="category-main-header">
                     <p>Mostrando 1–4 de 4 resultados</p>
+
                     <div class="category-sort">
-                        <label for="ordenEscolar">Ordenar por:</label>
-                        <select id="ordenEscolar" class="sidebar-select">
+                        <label for="ordenOficina">Ordenar por:</label>
+                        <select id="ordenOficina" class="sidebar-select">
                             <option value="default">Predeterminado</option>
                             <option value="precio-asc">Precio: menor a mayor</option>
                             <option value="precio-desc">Precio: mayor a menor</option>
@@ -170,61 +175,57 @@
                     </div>
                 </div>
 
-                <div id="gridEscolar" class="product-grid">
+                <div id="gridOficina" class="product-grid">
 
-                    <!-- MOCHILA -->
                     <article class="product-card"
-                             data-id="ES001"
-                             data-nombre="Mochila juvenil"
-                             data-precio="18.50"
-                             data-tipo="mochilas">
+                             data-id="OF001"
+                             data-nombre="Archivador de palanca"
+                             data-precio="3.20"
+                             data-tipo="archivadores">
                         <div class="product-image">
-                            <img src="../imagenes/Mochila_juvenil.jpeg" alt="Mochila juvenil">
+                            <img src="../Model/imagenes/Archivador_de_palanca.png" alt="Archivador de palanca">
                         </div>
-                        <h3>Mochila juvenil</h3>
-                        <p class="product-price">$18.50 + IVA</p>
+                        <h3>Archivador de palanca</h3>
+                        <p class="product-price">$3.20 + IVA</p>
                         <button class="btn-add-grid">Agregar al carrito</button>
                     </article>
 
-                    <!-- CUADERNO -->
                     <article class="product-card"
-                             data-id="ES002"
-                             data-nombre="Cuaderno universitario"
-                             data-precio="2.30"
-                             data-tipo="cuadernos">
+                             data-id="OF002"
+                             data-nombre="Set de clips y grapas"
+                             data-precio="1.10"
+                             data-tipo="organizacion">
                         <div class="product-image">
-                            <img src="../imagenes/Cuaderno_universitario.jpg" alt="Cuaderno universitario">
+                            <img src="../Model/imagenes/Set_de_clips_y_grapas.jpeg" alt="Set de clips y grapas">
                         </div>
-                        <h3>Cuaderno universitario</h3>
-                        <p class="product-price">$2.30 + IVA</p>
+                        <h3>Set de clips y grapas</h3>
+                        <p class="product-price">$1.10 + IVA</p>
                         <button class="btn-add-grid">Agregar al carrito</button>
                     </article>
 
-                    <!-- ESTUCHE -->
                     <article class="product-card"
-                             data-id="ES003"
-                             data-nombre="Estuche con lapiceros"
-                             data-precio="4.20"
-                             data-tipo="lapiceros">
+                             data-id="OF003"
+                             data-nombre="Bandeja organizadora"
+                             data-precio="4.80"
+                             data-tipo="organizacion">
                         <div class="product-image">
-                            <img src="../imagenes/Estuche_con_lapiceros.jpg" alt="Estuche con lapiceros">
+                            <img src="../Model/imagenes/Bandeja_organizadora.png" alt="Bandeja organizadora">
                         </div>
-                        <h3>Estuche con lapiceros</h3>
-                        <p class="product-price">$4.20 + IVA</p>
+                        <h3>Bandeja organizadora</h3>
+                        <p class="product-price">$4.80 + IVA</p>
                         <button class="btn-add-grid">Agregar al carrito</button>
                     </article>
 
-                    <!-- COLORES -->
                     <article class="product-card"
-                             data-id="ES004"
-                             data-nombre="Set de colores"
-                             data-precio="3.10"
-                             data-tipo="colores">
+                             data-id="OF004"
+                             data-nombre="Calculadora de escritorio"
+                             data-precio="6.50"
+                             data-tipo="escritura">
                         <div class="product-image">
-                            <img src="../imagenes/Marcadores_Pelikan.jpg" alt="Set de colores">
+                            <img src="../Model/imagenes/Calculadora_de_escritorio.png" alt="Calculadora de escritorio">
                         </div>
-                        <h3>Set de colores</h3>
-                        <p class="product-price">$3.10 + IVA</p>
+                        <h3>Calculadora de escritorio</h3>
+                        <p class="product-price">$6.50 + IVA</p>
                         <button class="btn-add-grid">Agregar al carrito</button>
                     </article>
 
@@ -237,91 +238,109 @@
         <p>MegaSantiago © 2025 - Todos los derechos reservados</p>
     </footer>
 
-    <!-- LÓGICA ORDENAR + FILTROS + CARRITO -->
+    <!-- ORDENAR -->
     <script>
         (function () {
-            const selectOrden = document.getElementById('ordenEscolar');
-            const grid = document.getElementById('gridEscolar');
+            const selectOrden = document.getElementById("ordenOficina");
+            const grid = document.getElementById("gridOficina");
 
-            /* -------- ORDENAR -------- */
-            function ordenar() {
+            selectOrden.addEventListener("change", () => {
                 const opcion = selectOrden.value;
-                const cards = Array.from(grid.querySelectorAll('.product-card'));
-                if (opcion === 'default') return;
+                const cards = Array.from(grid.querySelectorAll(".product-card"));
+
+                if (opcion === "default") return;
 
                 cards.sort((a, b) => {
                     const pa = parseFloat(a.dataset.precio);
                     const pb = parseFloat(b.dataset.precio);
-                    return opcion === 'precio-asc' ? pa - pb : pb - pa;
+
+                    return opcion === "precio-asc" ? pa - pb : pb - pa;
                 });
 
                 cards.forEach(c => grid.appendChild(c));
+            });
+        })();
+    </script>
+
+    <!-- FILTROS -->
+    <script>
+        (function () {
+
+            const grid = document.getElementById("gridOficina");
+            const cards = Array.from(grid.querySelectorAll(".product-card"));
+
+            const selectTipo = document.querySelector(".sidebar-select-tipo");
+            const range = document.querySelector(".sidebar-range");
+            const infoPrecio = document.querySelector(".sidebar-range-info");
+            const btnFiltrar = document.querySelector(".btn-sidebar");
+
+            infoPrecio.textContent = "Precio máx: $" + range.value;
+
+            range.addEventListener("input", () => {
+                infoPrecio.textContent = "Precio máx: $" + range.value;
+            });
+
+            btnFiltrar.addEventListener("click", () => {
+
+                const t = selectTipo.value;
+                const maxP = parseFloat(range.value);
+
+                cards.forEach(card => {
+                    const precio = parseFloat(card.dataset.precio);
+                    const tipo = card.dataset.tipo;
+
+                    const okTipo = t === "todos" || tipo === t;
+                    const okPrecio = precio <= maxP;
+
+                    card.style.display = (okTipo && okPrecio) ? "" : "none";
+                });
+            });
+
+        })();
+    </script>
+
+    <!-- CARRITO -->
+    <script>
+        (function () {
+
+            function getCarrito() {
+                return JSON.parse(localStorage.getItem("carritoMega") || "[]");
             }
 
-            selectOrden.addEventListener('change', ordenar);
-
-            /* -------- CARRITO -------- */
-            function obtenerCarrito() {
-                return JSON.parse(localStorage.getItem('carritoMega') || '[]');
-            }
-            function guardarCarrito(carrito) {
-                localStorage.setItem('carritoMega', JSON.stringify(carrito));
-            }
-            function agregarAlCarrito(id, nombre, precio) {
-                let carrito = obtenerCarrito();
-                const existe = carrito.find(p => p.id === id);
-                if (existe) existe.cantidad += 1;
-                else carrito.push({ id, nombre, precio, cantidad: 1 });
-                guardarCarrito(carrito);
+            function saveCarrito(c) {
+                localStorage.setItem("carritoMega", JSON.stringify(c));
             }
 
-            document.querySelectorAll('.btn-add-grid').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const card = btn.closest('.product-card');
-                    agregarAlCarrito(
+            function agregar(id, nombre, precio) {
+                let c = getCarrito();
+                const ex = c.find(p => p.id === id);
+
+                if (ex) ex.cantidad++;
+                else c.push({ id, nombre, precio, cantidad: 1 });
+
+                saveCarrito(c);
+            }
+
+            document.querySelectorAll(".btn-add-grid").forEach(btn => {
+                btn.addEventListener("click", () => {
+
+                    const card = btn.closest(".product-card");
+
+                    agregar(
                         card.dataset.id,
                         card.dataset.nombre,
                         parseFloat(card.dataset.precio)
                     );
-                    alert('Producto agregado al carrito');
+
+                    alert("Producto agregado al carrito");
                 });
             });
 
-            /* -------- FILTRO TIPO + PRECIO -------- */
-            const cards = Array.from(grid.querySelectorAll('.product-card'));
-            const selectTipo  = document.querySelector('.sidebar-select-tipo');
-            const rangePrecio = document.querySelector('.sidebar-range');
-            const infoPrecio  = document.querySelector('.sidebar-range-info');
-            const btnFiltrar  = document.querySelector('.btn-sidebar');
-
-            if (rangePrecio && infoPrecio) {
-                infoPrecio.textContent = 'Precio máx: $' + rangePrecio.value;
-                rangePrecio.addEventListener('input', () => {
-                    infoPrecio.textContent = 'Precio máx: $' + rangePrecio.value;
-                });
-            }
-
-            function aplicarFiltros() {
-                const tipoSeleccionado = selectTipo.value;
-                const maxPrecio = parseFloat(rangePrecio.value);
-
-                cards.forEach(card => {
-                    const precio   = parseFloat(card.dataset.precio);
-                    const tipoCard = card.dataset.tipo;
-
-                    const okTipo = tipoSeleccionado === 'todos' || tipoCard === tipoSeleccionado;
-                    const okPrecio = precio <= maxPrecio;
-
-                    card.style.display = (okTipo && okPrecio) ? '' : 'none';
-                });
-            }
-
-            btnFiltrar.addEventListener('click', aplicarFiltros);
         })();
     </script>
 
-    <!-- BUSCADOR GLOBAL -->
-    <script src="../js/busqueda-global.js"></script>
+    <!-- BUSCADOR GLOBAL: View → Model/js -->
+    <script src="../Model/js/busqueda-global.js"></script>
 
 </body>
 </html>
