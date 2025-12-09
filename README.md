@@ -54,22 +54,6 @@ Productos corregidos:
 - Cuaderno universitario 100 hojas
 - Otros artículos escolares
 
-## 📌 Estructura del Repositorio
-```
-ProyectoMegaSantiagoWordpress/
-│
-├── css/
-├── js/
-├── imágenes/
-├── template-overrides/
-│   ├── home.php
-│   ├── category.php
-│   ├── product-card.php
-│   ├── search.php
-│   └── cart.php
-└── README.md
-```
-
 ## 📌 Conclusiones
 - Interfaz moderna y clara
 - Mejor experiencia de usuario
