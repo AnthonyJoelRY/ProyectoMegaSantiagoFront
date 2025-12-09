@@ -77,7 +77,7 @@ ProyectoMegaSantiagoWordpress/
 - Preparado para integración de métodos de pago
 
 ## 📌 Repositorio Oficial
-🔗 https://github.com/AnthonyJoelRY/ProyectoMegaSantiagoWordpress
+🔗 https://github.com/AnthonyJoelRY/ProyectoMegaSantiagoFront
 ## link de wiframe: 
 https://excalidraw.com/#json=_fcWCgIk4n3clVOwuzyCa,tix3LXE9W7AnRhXhoEdX8Q
 
