@@ -236,7 +236,7 @@ body {
 .banner-principal {
     width: 100%;
     min-height: 280px;
-    background-image: url("../imagenes/banner_1.jpg"); /* ruta desde la carpeta csss estilos */
+    background-image: url("./imagenes/banner_1.jpg"); /* ruta desde la carpeta csss estilos */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
