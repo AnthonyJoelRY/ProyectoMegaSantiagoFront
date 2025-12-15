@@ -6,7 +6,18 @@
     <title>MegaSantiago | Acceder / Registrarse</title>
 
     <!-- CSS (desde View/pages → Model) -->
-    <link rel="stylesheet" href="../../Model/csss estilos/estilos.css">
+ <link rel="stylesheet" href="../../Model/csss%20estilos/estilos.css">
+
+
+    <!-- (Opcional) Fix rápido si tu CSS aún no tiene estilos uniformes -->
+    <style>
+        .auth-form label{display:block;font-weight:600;margin-top:14px;margin-bottom:6px}
+        .auth-form input{width:100%;padding:12px 14px;box-sizing:border-box}
+        .auth-separator{margin:18px 0;border-top:1px solid #e5e5e5;padding-top:14px}
+        .btn-auth-secondary{width:100%;padding:12px 14px;border:1px solid #cfcfcf;border-radius:6px;background:#f7f7f7;cursor:pointer}
+        .btn-auth-secondary:hover{background:#f0f0f0}
+        .auth-note{margin-top:12px;font-size:13px;color:#666;line-height:1.35}
+    </style>
 </head>
 <body>
 
@@ -20,50 +31,77 @@
         <section class="auth-container">
 
             <!-- LOGIN -->
-            <div class="auth-card">
-                <h2>Acceder</h2>
+            <div class="auth-card auth-card--login">
+  <h2>Acceder</h2>
 
-                <form id="formLogin" class="auth-form">
-                    <label for="login-email">
-                        Email <span class="req">*</span>
-                    </label>
-                    <input type="email" id="login-email" required>
+  <form id="formLogin" class="auth-form">
+    <label for="login-email">
+      Email <span class="req">*</span>
+    </label>
+    <input type="email" id="login-email" required autocomplete="email">
 
-                    <label for="login-clave">
-                        Contraseña <span class="req">*</span>
-                    </label>
-                    <div class="auth-password-wrapper">
-                        <input type="password" id="login-clave" required>
-                        <button type="button" class="btn-eye" data-target="login-clave">👁</button>
-                    </div>
+    <label for="login-clave">
+      Contraseña <span class="req">*</span>
+    </label>
+    <div class="auth-password-wrapper">
+      <input type="password" id="login-clave" required autocomplete="current-password">
+      <button type="button" class="btn-eye" data-target="login-clave">👁</button>
+    </div>
 
-                    <button type="submit" class="btn-auth-primary">
-                        INICIAR SESIÓN
-                    </button>
-                </form>
-            </div>
+    <!-- ✅ Olvidaste tu contraseña -->
+    <a href="recuperar_clave.html" class="auth-link">¿Olvidaste tu contraseña?</a>
+
+    <button type="submit" class="btn-auth-primary">
+      INICIAR SESIÓN
+    </button>
+  </form>
+</div>
 
             <!-- REGISTRO -->
             <div class="auth-card">
                 <h2>Registrarse</h2>
 
                 <form id="formRegistro" class="auth-form">
+                    <!-- ✅ NUEVO: NOMBRE -->
+                    <label for="reg-nombre">
+                        Nombre <span class="req">*</span>
+                    </label>
+                    <input type="text" id="reg-nombre" required autocomplete="given-name">
+
+                    <!-- ✅ NUEVO: APELLIDO -->
+                    <label for="reg-apellido">
+                        Apellido <span class="req">*</span>
+                    </label>
+                    <input type="text" id="reg-apellido" required autocomplete="family-name">
+
+                    <!-- Email -->
                     <label for="reg-correo">
                         Email <span class="req">*</span>
                     </label>
-                    <input type="email" id="reg-correo" required>
+                    <input type="email" id="reg-correo" required autocomplete="email">
 
+                    <!-- Password -->
                     <label for="reg-clave">
                         Contraseña <span class="req">*</span>
                     </label>
                     <div class="auth-password-wrapper">
-                        <input type="password" id="reg-clave" required>
+                        <input type="password" id="reg-clave" required autocomplete="new-password">
+                        <!-- 👁 NO TOCAR -->
                         <button type="button" class="btn-eye" data-target="reg-clave">👁</button>
                     </div>
 
                     <button type="submit" class="btn-auth-primary">
                         CREAR CUENTA
                     </button>
+
+                    <p class="auth-note">
+                        Al crear una cuenta aceptas los términos y condiciones de MegaSantiago.
+                    </p>
+
+                    <!-- ✅ BLOQUE "empresa" estilo Amazon (opcional, si ya lo estabas usando) -->
+                    <div class="auth-separator">
+                     <a href="registro_empresa.html" class="auth-link">¿Tienes una empresa? Crea tu cuenta aquí</a>
+                    </div>
                 </form>
             </div>
 
@@ -135,14 +173,22 @@
         document.getElementById("formRegistro").addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const email = document.getElementById("reg-correo").value.trim();
-            const clave = document.getElementById("reg-clave").value.trim();
+            // ✅ NUEVO: nombre / apellido / correo
+            const nombre   = document.getElementById("reg-nombre").value.trim();
+            const apellido = document.getElementById("reg-apellido").value.trim();
+            const email    = document.getElementById("reg-correo").value.trim();
+            const clave    = document.getElementById("reg-clave").value.trim();
+
+            if (!nombre || !apellido || !email || !clave) {
+                alert("Completa todos los campos obligatorios.");
+                return;
+            }
 
             try {
                 const resp = await fetch(`${API}?accion=registrar`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, clave })
+                    body: JSON.stringify({ nombre, apellido, email, clave })
                 });
 
                 if (!resp.ok) {
@@ -166,16 +212,14 @@
                 alert("Cuenta creada exitosamente, ahora puedes iniciar sesión.");
                 document.getElementById("login-email").value = email;
                 document.getElementById("login-clave").value = "";
+
             } catch (err) {
                 console.error(err);
                 alert("Error de conexión con el servidor.");
             }
         });
 
-        /* ================== ALIAS BUSCADOR (OPCIÓN 1) ==================
-           Si alguien usa el buscador desde el header estando aquí,
-           redirige a la página de búsqueda
-        =============================================================== */
+        /* ================== ALIAS BUSCADOR (OPCIÓN 1) ================== */
         function realizarBusquedaGlobal() {
             const input = document.getElementById("buscador");
             if (!input) return;

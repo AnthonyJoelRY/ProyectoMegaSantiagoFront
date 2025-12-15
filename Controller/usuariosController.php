@@ -9,15 +9,16 @@ $accion = $_GET["accion"] ?? "";
  * Obtiene el id_rol del rol "Cliente".
  * Si no existe, por defecto 3.
  */
-function obtenerIdRolCliente(PDO $pdo): int {
-    $sql = "SELECT id_rol FROM roles WHERE LOWER(nombre) = 'cliente' LIMIT 1";
+function obtenerIdRolVendedor(PDO $pdo): int {
+    $sql = "SELECT id_rol FROM roles WHERE LOWER(nombre) = 'vendedor' LIMIT 1";
     $stmt = $pdo->query($sql);
     $fila = $stmt->fetch();
     if ($fila && isset($fila["id_rol"])) {
         return (int)$fila["id_rol"];
     }
-    return 3; // valor de respaldo
+    return 2; // respaldo
 }
+
 
 switch ($accion) {
 
@@ -70,6 +71,110 @@ switch ($accion) {
             ]
         ]);
         break;
+        /* ==========================================================
+   REGISTRO DE EMPRESA + USUARIO PROPIETARIO
+========================================================== */
+case "registrarEmpresa":
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    // -------- Datos empresa --------
+    $nombreLegal = trim($data["nombre_legal"] ?? "");
+    $ruc         = trim($data["ruc"] ?? "");
+    $emailEmp    = trim($data["email_empresa"] ?? "");
+    $telefono    = trim($data["telefono"] ?? "");
+    $direccion   = trim($data["direccion_fiscal"] ?? "");
+    $ciudad      = trim($data["ciudad"] ?? "");
+    $pais        = trim($data["pais"] ?? "Ecuador");
+    $tipoNegocio = trim($data["tipo_negocio"] ?? "");
+
+    // -------- Datos usuario dueño --------
+    $nombre   = trim($data["nombre"] ?? "");
+    $apellido = trim($data["apellido"] ?? "");
+    $emailUsr = trim($data["email"] ?? "");
+    $clave    = trim($data["clave"] ?? "");
+
+    if (
+        $nombreLegal === "" || $ruc === "" || $emailEmp === "" ||
+        $nombre === "" || $apellido === "" || $emailUsr === "" || $clave === ""
+    ) {
+        echo json_encode(["error" => "Faltan datos obligatorios."]);
+        exit;
+    }
+
+    try {
+        // 🔒 Iniciar transacción
+        $pdo->beginTransaction();
+
+        // 1️⃣ Crear empresa
+        $stmt = $pdo->prepare("
+            INSERT INTO empresas
+            (nombre_legal, ruc, email_empresa, telefono, direccion_fiscal, ciudad, pais, tipo_negocio)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->execute([
+            $nombreLegal,
+            $ruc,
+            $emailEmp,
+            $telefono,
+            $direccion,
+            $ciudad,
+            $pais,
+            $tipoNegocio
+        ]);
+
+        $idEmpresa = (int)$pdo->lastInsertId();
+
+        // 2️⃣ Crear usuario propietario (rol vendedor)
+        $idRolVendedor = obtenerIdRolVendedor($pdo);
+        $claveHash = password_hash($clave, PASSWORD_BCRYPT);
+
+        $stmt = $pdo->prepare("
+            INSERT INTO usuarios
+            (id_rol, email, clave_hash, activo)
+            VALUES (?, ?, ?, 1)
+        ");
+        $stmt->execute([
+            $idRolVendedor,
+            $emailUsr,
+            $claveHash
+        ]);
+
+        $idUsuario = (int)$pdo->lastInsertId();
+
+        // 3️⃣ Relacionar empresa ↔ usuario
+        $stmt = $pdo->prepare("
+            INSERT INTO empresa_usuarios
+            (id_empresa, id_usuario, cargo)
+            VALUES (?, ?, 'propietario')
+        ");
+        $stmt->execute([$idEmpresa, $idUsuario]);
+
+        // ✅ Confirmar todo
+        $pdo->commit();
+
+        echo json_encode([
+            "exito" => true,
+            "empresa" => [
+                "id" => $idEmpresa,
+                "nombre" => $nombreLegal
+            ],
+            "usuario" => [
+                "id" => $idUsuario,
+                "email" => $emailUsr,
+                "rol" => $idRolVendedor
+            ]
+        ]);
+        break;
+
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        echo json_encode([
+            "error" => "Error al registrar empresa",
+            "detalle" => $e->getMessage()
+        ]);
+        exit;
+    }
+
 
     /* ==========================================================
        LOGIN DE USUARIO

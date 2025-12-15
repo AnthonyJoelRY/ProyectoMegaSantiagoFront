@@ -1105,3 +1105,51 @@ body {
 .menu-item.has-mega .mega-col ul li a:hover {
   text-decoration: underline;
 }
+/* Aplica estilo uniforme a todos los labels dentro de formularios */
+.auth-form label {
+    display: block;
+    font-weight: 600;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+/* Inputs y selects uniformes */
+.auth-form input,
+.auth-form select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #f5f5f5;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+.auth-form input:focus,
+.auth-form select:focus {
+    border-color: #0073e6;
+    outline: none;
+    background: #fff;
+}
+.auth-page {
+    display: flex;
+    justify-content: center;
+    padding: 50px 0;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    justify-content: center;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 650px;
+    background: #fff;
+    padding: 35px 40px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}

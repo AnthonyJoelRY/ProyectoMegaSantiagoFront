@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MegaSantiago | Registro de Empresa</title>
+
+    <!-- CSS global: desde View → Model -->
+<link rel="stylesheet" href="../../Model/csss%20estilos/estilos.css">
+
+</head>
+<body>
+
+    <!-- BARRA SUPERIOR -->
+    <div class="top-bar">
+        <p>REGISTRA TU EMPRESA EN MEGASANTIAGO Y EMPIEZA A VENDER</p>
+    </div>
+
+    <!-- HEADER SIMPLE -->
+    <header class="main-header">
+        <div class="header-left">
+            <a href="../index.html">
+                <img src="../../Model/imagenes/Logo_MegaSantiago.png" alt="MegaSantiago" class="logo-mega">
+            </a>
+        </div>
+
+        <div class="header-center">
+            <h1 class="auth-header-title">Registro de empresa</h1>
+        </div>
+
+        <div class="header-right">
+            <a href="login.html" class="link-header">← Volver a Acceder / Registrarse</a>
+            <!-- Cambia el href al nombre real de tu archivo de login/registro -->
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="auth-page">
+        <section class="auth-container">
+
+            <div class="auth-card">
+                <h2>Crea tu cuenta de empresa</h2>
+
+                <form id="formRegistroEmpresa" class="auth-form">
+                    <label for="empresa-nombre">
+                        Nombre legal de la empresa <span class="req">*</span>
+                    </label>
+                    <input type="text" id="empresa-nombre" required>
+
+                    <label for="empresa-ruc">
+                        RUC / Identificación fiscal <span class="req">*</span>
+                    </label>
+                    <input type="text" id="empresa-ruc" required>
+
+                    <label for="empresa-correo">
+                        Correo electrónico de la empresa <span class="req">*</span>
+                    </label>
+                    <input type="email" id="empresa-correo" required>
+
+                    <label for="empresa-telefono">
+                        Teléfono de contacto <span class="req">*</span>
+                    </label>
+                    <input type="tel" id="empresa-telefono" required>
+
+                    <label for="empresa-direccion">
+                        Dirección fiscal <span class="req">*</span>
+                    </label>
+                    <input type="text" id="empresa-direccion" required>
+
+                    <label for="empresa-ciudad">
+                        Ciudad
+                    </label>
+                    <input type="text" id="empresa-ciudad">
+
+                    <label for="empresa-pais">
+                        País
+                    </label>
+                    <input type="text" id="empresa-pais" value="Ecuador">
+
+                    <label for="empresa-tipo">
+                        Tipo de negocio
+                    </label>
+                    <select id="empresa-tipo">
+                        <option value="">Selecciona una opción</option>
+                        <option value="libreria">Librería / Papelería</option>
+                        <option value="bazar">Bazar / Miscelánea</option>
+                        <option value="tecnologia">Tecnología</option>
+                        <option value="otro">Otro</option>
+                    </select>
+
+                    <label for="empresa-clave">
+                        Contraseña de la cuenta <span class="req">*</span>
+                    </label>
+                    <div class="auth-password-wrapper">
+                        <input type="password" id="empresa-clave" required>
+                        <button type="button" class="btn-eye" data-target="empresa-clave">👁</button>
+                    </div>
+
+                    <button type="submit" class="btn-auth-primary">
+                        Crear cuenta de empresa
+                    </button>
+                </form>
+
+                <p class="auth-note">
+                    Al crear una cuenta de empresa aceptas los términos y condiciones de MegaSantiago.
+                </p>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>MegaSantiago © 2025 - Todos los derechos reservados</p>
+    </footer>
+
+    <script>
+        // Mostrar / ocultar contraseña
+        document.querySelectorAll('.btn-eye').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if (input.type === 'password') {
+                    input.type = 'text';
+                } else {
+                    input.type = 'password';
+                }
+            });
+        });
+
+        // Demo registro empresa (solo mensaje)
+        const formRegistroEmpresa = document.getElementById('formRegistroEmpresa');
+        formRegistroEmpresa.addEventListener('submit', e => {
+            e.preventDefault();
+            alert('Registro de empresa (demo) realizado. Aquí iría el guardado real en base de datos.');
+        });
+    </script>
+
+</body>
+</html>
