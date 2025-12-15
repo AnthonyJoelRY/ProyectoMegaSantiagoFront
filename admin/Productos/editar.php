@@ -24,19 +24,21 @@ if (!$id || !is_numeric($id)) {
 ========================= */
 $stmt = $pdo->prepare("
 SELECT 
-    id_producto,
-    id_categoria,
-    nombre,
-    descripcion_corta,
-    descripcion_larga,
-    precio,
-    precio_oferta,
-    sku,
-    aplica_iva,
-    activo
-FROM productos
-WHERE id_producto = ?
-
+    p.id_producto,
+    p.id_categoria,
+    p.nombre,
+    p.descripcion_corta,
+    p.descripcion_larga,
+    p.precio,
+    p.precio_oferta,
+    p.sku,
+    p.aplica_iva,
+    p.activo,
+    img.url_imagen
+FROM productos p
+LEFT JOIN producto_imagenes img 
+    ON img.id_producto = p.id_producto AND img.es_principal = 1
+WHERE p.id_producto = ?
 ");
 
 $stmt->execute([$id]);
@@ -53,6 +55,12 @@ $categorias = $pdo->query("
     WHERE activo = 1
     ORDER BY nombre
 ")->fetchAll();
+
+/* =========================
+   IMÁGENES DISPONIBLES
+========================= */
+$carpeta = __DIR__ . "/../../Model/imagenes/";
+$imagenes = glob($carpeta . "*.{jpg,jpeg,png,webp}", GLOB_BRACE);
 
 ?>
 
@@ -117,6 +125,32 @@ $categorias = $pdo->query("
                                     required>
                             </div>
 
+                            <!-- Imagen -->
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Imagen del producto</label>
+
+                                <select name="imagen" class="form-select">
+                                    <option value="">Mantener imagen actual</option>
+
+                                    <?php foreach ($imagenes as $img):
+                                        $nombre = basename($img);
+                                        $ruta   = "imagenes/" . $nombre;
+                                    ?>
+                                        <option value="<?= $ruta ?>"
+                                            <?= ($producto["url_imagen"] === $ruta) ? "selected" : "" ?>>
+                                            <?= $nombre ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+
+                                <?php if (!empty($producto["url_imagen"])): ?>
+                                    <small class="text-muted d-block mt-1">
+                                        Imagen actual: <?= htmlspecialchars($producto["url_imagen"]) ?>
+                                    </small>
+                                <?php endif; ?>
+                            </div>
+
+
                             <!-- CATEGORÍA -->
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold">Categoría</label>
@@ -128,10 +162,12 @@ $categorias = $pdo->query("
                                             <?= $c["id_categoria"] == $producto["id_categoria"] ? "selected" : "" ?>>
                                             <?= htmlspecialchars($c["nombre"]) ?>
                                         </option>
+
                                     <?php endforeach; ?>
 
                                 </select>
                             </div>
+
 
 
                             <!-- PRECIO -->
@@ -147,7 +183,7 @@ $categorias = $pdo->query("
 
                             <!-- PRECIO OFERTA -->
                             <div class="col-md-4 mb-3">
-                                <label class="form-label fw-semibold">Precio Oferta</label>
+                                <label class="form-label fw-semibold">Descuento (%)</label>
                                 <input type="number"
                                     step="0.01"
                                     name="precio_oferta"

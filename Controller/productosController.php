@@ -112,25 +112,27 @@ switch ($accion) {
         if ($limit <= 0) { $limit = 4; }
 
         $sql = "
-            SELECT 
-                p.id_producto   AS id,
-                p.nombre,
-                p.descripcion_corta,
-                p.precio,
-                p.precio_oferta,
-                c.slug          AS categoria,
-                (
-                    SELECT url_imagen
-                    FROM producto_imagenes i
-                    WHERE i.id_producto = p.id_producto
-                    ORDER BY i.es_principal DESC, i.orden ASC, i.id_imagen ASC
-                    LIMIT 1
-                ) AS imagen
-            FROM productos p
-            JOIN categorias c ON c.id_categoria = p.id_categoria
-            WHERE p.activo = 1
-            ORDER BY p.id_producto ASC
-            LIMIT $limit
+SELECT 
+    p.id_producto   AS id,
+    p.nombre,
+    p.descripcion_corta,
+    p.precio,
+    NULL AS precio_oferta,
+    c.slug          AS categoria,
+    (
+        SELECT url_imagen
+        FROM producto_imagenes i
+        WHERE i.id_producto = p.id_producto
+        ORDER BY i.es_principal DESC, i.orden ASC, i.id_imagen ASC
+        LIMIT 1
+    ) AS imagen
+FROM productos p
+JOIN categorias c ON c.id_categoria = p.id_categoria
+WHERE p.activo = 1
+  AND (p.precio_oferta IS NULL OR p.precio_oferta = 0)
+ORDER BY p.id_producto ASC
+LIMIT $limit
+
         ";
 
         $stmt = $pdo->query($sql);

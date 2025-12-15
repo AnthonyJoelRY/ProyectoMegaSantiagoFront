@@ -115,8 +115,13 @@
 
         function crearCardMasVendido(prod) {
             const precioBase = parseFloat(prod.precio);
-            const precioOferta = prod.precio_oferta ? parseFloat(prod.precio_oferta) : null;
-            const precioMostrado = (precioOferta && precioOferta > 0) ? precioOferta : precioBase;
+            const descuento = prod.precio_oferta ? parseFloat(prod.precio_oferta) : 0;
+
+            let precioFinal = precioBase;
+            if (descuento > 0) {
+            precioFinal = precioBase - (precioBase * descuento / 100);
+        }
+
 
             const rutaImagen = prod.imagen ? "Model/" + prod.imagen : "Model/imagenes/sin-imagen.png";
 

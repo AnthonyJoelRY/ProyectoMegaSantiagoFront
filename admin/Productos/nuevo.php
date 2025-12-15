@@ -79,7 +79,7 @@ $imagenes = glob($carpeta . "*.{jpg,jpeg,png,webp}", GLOB_BRACE);
                             <input type="text" name="precio" class="form-control" required>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label class="form-label">Precio oferta</label>
+                            <label class="form-label">Descuento (%)</label>
                             <input type="text" name="precio_oferta" class="form-control">
                         </div>
                     </div>
@@ -95,7 +95,7 @@ $imagenes = glob($carpeta . "*.{jpg,jpeg,png,webp}", GLOB_BRACE);
                             <option value="">Seleccione una imagen</option>
 
                             <?php foreach ($imagenes as $img): ?>
-                                <option value="<?= basename($img) ?>">
+                                <option value="imagenes/<?= basename($img) ?>">
                                     <?= basename($img) ?>
                                 </option>
                             <?php endforeach; ?>

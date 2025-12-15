@@ -200,8 +200,8 @@ $productos = $stmt->fetchAll();
                                     <th>Imagen</th>
                                     <th>Nombre</th>
                                     <th>Precio</th>
-                                    <th>Oferta</th>
                                     <th>Stock</th>
+                                    <th>Oferta</th>
                                     <th>Estado</th>
                                     <th class="text-center">Acciones</th>
                                 </tr>
@@ -244,7 +244,7 @@ $productos = $stmt->fetchAll();
                                             <td><?= $p["stock"] ?></td>
 
                                             <td>
-                                                <?php if ($p["precio_oferta"]): ?>
+                                                <?php if ($p["precio_oferta"] ? $p["precio_oferta"] . "%" : "—"): ?>
                                                     <span class="badge bg-warning text-dark">
                                                         $<?= number_format($p["precio_oferta"], 2) ?>
                                                     </span>
