@@ -61,16 +61,19 @@ class AuthService {
             session_start();
         }
 
-        $_SESSION["id"]  = $usuario->id_usuario;
-        $_SESSION["rol"] = $usuario->id_rol;
-        $_SESSION["email"] = $usuario->email;
+        $_SESSION["id"]      = (int)$usuario->id_usuario;
+        $_SESSION["rol"]     = (int)$usuario->id_rol;
+        $_SESSION["email"]   = $usuario->email;
+
+        // ✅ FIX: el dashboard valida esto
+        $_SESSION["usuario"] = $usuario->email;
 
         return [
             "exito" => true,
             "usuario" => [
-                "id" => $usuario->id_usuario,
+                "id" => (int)$usuario->id_usuario,
                 "email" => $usuario->email,
-                "rol" => $usuario->id_rol
+                "rol" => (int)$usuario->id_rol
             ]
         ];
     }
