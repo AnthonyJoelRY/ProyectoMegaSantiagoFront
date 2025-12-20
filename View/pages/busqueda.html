@@ -42,7 +42,14 @@
         const API_URL = "/MegaSantiagoFront/Controller/productosController.php";
 
         /* ================== BUSCAR (redirección) ================== */
-        function realizarBusqueda() {
+        function resolverImagen(img) {
+      if (!img || String(img).trim() === "") return "/MegaSantiagoFront/Model/imagenes/sin-imagen.png";
+      const limpia = String(img).trim();
+      if (limpia.startsWith("http://") || limpia.startsWith("https://")) return limpia;
+      return "/MegaSantiagoFront/Model/" + limpia;
+    }
+
+    function realizarBusqueda() {
             const input = document.getElementById('buscador');
             if (!input) return;
             const termino = input.value.trim();

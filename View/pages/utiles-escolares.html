@@ -90,7 +90,14 @@
     <script>
         const API_URL = "/MegaSantiagoFront/Controller/productosController.php";
 
-        function formatearDinero(valor) {
+        function resolverImagen(img) {
+      if (!img || String(img).trim() === "") return "/MegaSantiagoFront/Model/imagenes/sin-imagen.png";
+      const limpia = String(img).trim();
+      if (limpia.startsWith("http://") || limpia.startsWith("https://")) return limpia;
+      return "/MegaSantiagoFront/Model/" + limpia;
+    }
+
+    function formatearDinero(valor) {
             return "$" + Number(valor).toFixed(2);
         }
 
@@ -108,9 +115,7 @@
             const precioOferta  = prod.precio_oferta ? parseFloat(prod.precio_oferta) : null;
             const precioMostrar = (precioOferta && precioOferta > 0) ? precioOferta : precioBase;
 
-            const rutaImagen = prod.imagen
-                ? "../../Model/" + prod.imagen
-                : "../../Model/imagenes/sin-imagen.png";
+            const rutaImagen = resolverImagen(prod.imagen);
 
             const tipo = detectarTipoEscolar(prod.nombre);
 

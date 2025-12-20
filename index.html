@@ -48,7 +48,14 @@
     <script>
       const API_URL = "Controller/productosController.php";
 
-      function formatearDinero(valor) {
+      function resolverImagen(img) {
+      if (!img || String(img).trim() === "") return "Model/imagenes/sin-imagen.png";
+      const limpia = String(img).trim();
+      if (limpia.startsWith("http://") || limpia.startsWith("https://")) return limpia;
+      return "Model/" + limpia;
+    }
+
+    function formatearDinero(valor) {
         return "$" + Number(valor).toFixed(2);
       }
 
@@ -118,9 +125,7 @@
 
       function crearCardMasVendido(prod) {
         const precio = parseFloat(prod.precio);
-        const rutaImagen = prod.imagen
-          ? "Model/" + prod.imagen
-          : "Model/imagenes/sin-imagen.png";
+        const rutaImagen = resolverImagen(prod.imagen);
 
         return `
         <article class="card-categoria"
@@ -151,9 +156,7 @@
           textoDescuento = `-${porc}%`;
         }
 
-        const rutaImagen = prod.imagen
-          ? "Model/" + prod.imagen
-          : "Model/imagenes/sin-imagen.png";
+        const rutaImagen = resolverImagen(prod.imagen);
 
         return `
                 <article class="card-producto"

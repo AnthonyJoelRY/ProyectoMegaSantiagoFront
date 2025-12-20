@@ -91,16 +91,16 @@ $imagenes = glob($carpeta . "*.{jpg,jpeg,png,webp}", GLOB_BRACE);
 
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Imagen del producto</label>
-                        <select name="imagen" class="form-select" required>
-                            <option value="">Seleccione una imagen</option>
 
-                            <?php foreach ($imagenes as $img): ?>
-                                <option value="imagenes/<?= basename($img) ?>">
-                                    <?= basename($img) ?>
-                                </option>
-                            <?php endforeach; ?>
+                        <!-- Selecciona un archivo y se sube a Firebase Storage -->
+                        <input type="file" id="fileImagen" accept="image/*" class="form-control" required>
 
-                        </select>
+                        <!-- Aquí se guarda el downloadURL (esto se envía a acciones.php como 'imagen') -->
+                        <input type="hidden" name="imagen" id="imagenUrl" required>
+
+                        <small class="text-muted d-block mt-2" id="estadoUpload">
+                            Selecciona una imagen para subirla a Firebase.
+                        </small>
                     </div>
 
 
@@ -115,6 +115,72 @@ $imagenes = glob($carpeta . "*.{jpg,jpeg,png,webp}", GLOB_BRACE);
             </main>
         </div>
     </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+
+  // ✅ Pega aquí tu firebaseConfig (Firebase Console -> Project settings -> Your apps -> Web)
+ const firebaseConfig = {
+  apiKey: "AIzaSyDkCYDW61i0q186DDEJ-bxAvjp0iAW4-Xc",
+  authDomain: "megasantiago.firebaseapp.com",
+  projectId: "megasantiago",
+  storageBucket: "megasantiago.firebasestorage.app",
+  messagingSenderId: "68954725464",
+  appId: "1:68954725464:web:7e93567bcc98b4b3d83e2d",
+  measurementId: "G-8VB7YCPJW1"
+};
+
+  const app = initializeApp(firebaseConfig);
+  const storage = getStorage(app);
+
+  const fileInput = document.getElementById("fileImagen");
+  const estado = document.getElementById("estadoUpload");
+  const imagenUrl = document.getElementById("imagenUrl");
+  const form = document.querySelector("form");
+
+  function nombreSeguro(nombre) {
+    return nombre
+      .toLowerCase()
+      .replace(/\s+/g, "_")
+      .replace(/[^a-z0-9._-]/g, "");
+  }
+
+  async function subirImagen(file) {
+    const stamp = Date.now();
+    const path = `productos/${stamp}_${nombreSeguro(file.name)}`;
+    const storageRef = ref(storage, path);
+
+    await uploadBytes(storageRef, file, { contentType: file.type });
+    return await getDownloadURL(storageRef);
+  }
+
+  fileInput.addEventListener("change", async () => {
+    const file = fileInput.files?.[0];
+    if (!file) return;
+
+    estado.textContent = "Subiendo imagen a Firebase...";
+    imagenUrl.value = "";
+
+    try {
+      const url = await subirImagen(file);
+      imagenUrl.value = url;
+      estado.textContent = "✅ Imagen subida correctamente.";
+    } catch (e) {
+      console.error(e);
+      estado.textContent = "❌ Error subiendo imagen. Revisa Rules de Storage y consola.";
+    }
+  });
+
+  // Evitar guardar el producto si no hay URL subida
+  form.addEventListener("submit", (e) => {
+    if (!imagenUrl.value) {
+      e.preventDefault();
+      alert("Primero selecciona una imagen y espera a que se suba a Firebase.");
+    }
+  });
+</script>
+
 </body>
 
 </html>

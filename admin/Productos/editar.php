@@ -129,27 +129,25 @@ $imagenes = glob($carpeta . "*.{jpg,jpeg,png,webp}", GLOB_BRACE);
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-semibold">Imagen del producto</label>
 
-                                <select name="imagen" class="form-select">
-                                    <option value="">Mantener imagen actual</option>
+                                <!-- Si seleccionas una imagen, se sube a Firebase y se envía el URL en 'imagen' -->
+                                <input type="file" id="fileImagen" accept="image/*" class="form-control">
 
-                                    <?php foreach ($imagenes as $img):
-                                        $nombre = basename($img);
-                                        $ruta   = "imagenes/" . $nombre;
-                                    ?>
-                                        <option value="<?= $ruta ?>"
-                                            <?= ($producto["url_imagen"] === $ruta) ? "selected" : "" ?>>
-                                            <?= $nombre ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+                                <!-- Si queda vacío, acciones.php mantiene la imagen actual -->
+                                <input type="hidden" name="imagen" id="imagenUrl">
 
                                 <?php if (!empty($producto["url_imagen"])): ?>
-                                    <small class="text-muted d-block mt-1">
-                                        Imagen actual: <?= htmlspecialchars($producto["url_imagen"]) ?>
+                                    <small class="text-muted d-block mt-2">
+                                        Imagen actual:
+                                        <a href="<?= htmlspecialchars($producto["url_imagen"]) ?>" target="_blank">
+                                            ver
+                                        </a>
                                     </small>
                                 <?php endif; ?>
-                            </div>
 
+                                <small class="text-muted d-block mt-1" id="estadoUpload">
+                                    Si seleccionas una imagen nueva, se subirá a Firebase y reemplazará la actual.
+                                </small>
+                            </div>
 
                             <!-- CATEGORÍA -->
                             <div class="col-md-6 mb-3">
@@ -239,6 +237,71 @@ $imagenes = glob($carpeta . "*.{jpg,jpeg,png,webp}", GLOB_BRACE);
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+
+  // ✅ Pega aquí tu firebaseConfig (Firebase Console -> Project settings -> Your apps -> Web)
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_AUTH_DOMAIN",
+    projectId: "TU_PROJECT_ID",
+    storageBucket: "TU_STORAGE_BUCKET",
+    messagingSenderId: "TU_SENDER_ID",
+    appId: "TU_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const storage = getStorage(app);
+
+  const fileInput = document.getElementById("fileImagen");
+  const estado = document.getElementById("estadoUpload");
+  const imagenUrl = document.getElementById("imagenUrl");
+  const form = document.querySelector("form");
+
+  function nombreSeguro(nombre) {
+    return nombre
+      .toLowerCase()
+      .replace(/\s+/g, "_")
+      .replace(/[^a-z0-9._-]/g, "");
+  }
+
+  async function subirImagen(file) {
+    const stamp = Date.now();
+    const path = `productos/${stamp}_${nombreSeguro(file.name)}`;
+    const storageRef = ref(storage, path);
+
+    await uploadBytes(storageRef, file, { contentType: file.type });
+    return await getDownloadURL(storageRef);
+  }
+
+  fileInput.addEventListener("change", async () => {
+    const file = fileInput.files?.[0];
+    if (!file) return;
+
+    estado.textContent = "Subiendo imagen a Firebase...";
+    imagenUrl.value = "";
+
+    try {
+      const url = await subirImagen(file);
+      imagenUrl.value = url;
+      estado.textContent = "✅ Imagen subida correctamente.";
+    } catch (e) {
+      console.error(e);
+      estado.textContent = "❌ Error subiendo imagen. Revisa Rules de Storage y consola.";
+    }
+  });
+
+  // Si el usuario seleccionó archivo pero aún no terminó de subirse
+  form.addEventListener("submit", (e) => {
+    if (fileInput.files?.length && !imagenUrl.value) {
+      e.preventDefault();
+      alert("Espera a que la imagen termine de subirse a Firebase antes de guardar.");
+    }
+  });
+</script>
+
 </body>
 
 </html>

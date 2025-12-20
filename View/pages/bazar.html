@@ -84,6 +84,13 @@
   <script>
     const API_URL = "/MegaSantiagoFront/Controller/productosController.php";
 
+    function resolverImagen(img) {
+      if (!img || String(img).trim() === "") return "/MegaSantiagoFront/Model/imagenes/sin-imagen.png";
+      const limpia = String(img).trim();
+      if (limpia.startsWith("http://") || limpia.startsWith("https://")) return limpia;
+      return "/MegaSantiagoFront/Model/" + limpia;
+    }
+
     function formatearDinero(valor) { return "$" + Number(valor).toFixed(2); }
 
     /* ========= ✅ IGUAL QUE INDEX: BÚSQUEDA GLOBAL ========= */
@@ -118,9 +125,7 @@
       const precioOferta = prod.precio_oferta ? parseFloat(prod.precio_oferta) : null;
       const precioMostrar = (precioOferta && precioOferta > 0) ? precioOferta : precioBase;
 
-      const rutaImagen = prod.imagen
-        ? "/MegaSantiagoFront/Model/" + prod.imagen
-        : "/MegaSantiagoFront/Model/imagenes/sin-imagen.png";
+      const rutaImagen = resolverImagen(prod.imagen);
 
       const tipo = detectarTipoBazar(prod.nombre);
 

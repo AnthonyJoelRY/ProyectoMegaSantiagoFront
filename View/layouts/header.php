@@ -5,7 +5,7 @@
 <header class="main-header">
   <div class="header-left">
     <a href="/MegaSantiagoFront/index.html">
-      <img src="/MegaSantiagoFront/Model/imagenes/Logo_MegaSantiago.png" alt="MegaSantiago" class="logo-mega">
+      <img src="https://firebasestorage.googleapis.com/v0/b/megasantiago.firebasestorage.app/o/productos%2FLogo_MegaSantiago.png?alt=media&token=cc08f810-10ba-4fcd-b9f2-bb5f7bedf9ad" alt="MegaSantiago" class="logo-mega">
     </a>
   </div>
 
