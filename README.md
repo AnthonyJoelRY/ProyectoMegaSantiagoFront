@@ -68,3 +68,13 @@ https://excalidraw.com/#json=_fcWCgIk4n3clVOwuzyCa,tix3LXE9W7AnRhXhoEdX8Q
 ## 📩 Autor
 Anthony Joel Romero Yaguana
 Proyecto de actualización frontend — UTPL
+
+
+## PayPal Sandbox (carrito)
+
+- Configura tus credenciales en `Model/paypal_credentials.php`.
+- El carrito (`View/pages/carrito.html`) carga el SDK de PayPal dinámicamente y usa estos endpoints:
+  - `Controller/paypalController.php?accion=config`
+  - `Controller/paypalController.php?accion=create-order`
+  - `Controller/paypalController.php?accion=capture-order`
+

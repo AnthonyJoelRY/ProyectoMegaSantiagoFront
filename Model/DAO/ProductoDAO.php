@@ -65,7 +65,6 @@ class ProductoDAO
 
     public function masVendidos(int $limit): array
     {
-        // Evita inyección por LIMIT: forzamos int >= 1
         $limit = max(1, (int)$limit);
 
         $sql = "
@@ -134,7 +133,31 @@ class ProductoDAO
 
     public function promociones(int $limit): array
     {
-        // mismo query que ofertas, distinto default limit desde Service
         return $this->ofertas($limit);
+    }
+
+    public function obtenerPorIds(array $ids): array
+    {
+        if (count($ids) === 0) return [];
+
+        // Sanitiza ids
+        $ids = array_values(array_filter(array_map(fn($x) => (int)$x, $ids), fn($x) => $x > 0));
+        if (count($ids) === 0) return [];
+
+        $placeholders = implode(",", array_fill(0, count($ids), "?"));
+
+        // ✅ CAMBIO: tabla correcta es "productos"
+        $sql = "
+            SELECT 
+                p.id_producto AS id,
+                p.precio,
+                p.precio_oferta
+            FROM productos p
+            WHERE p.id_producto IN ($placeholders)
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($ids);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

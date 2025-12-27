@@ -1,186 +1,317 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MegaSantiago | Carrito</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MegaSantiago | Carrito</title>
 
-    <!-- CSS (desde View/pages → Model) -->
-    <link rel="stylesheet" href="../../Model/csss estilos/estilos.css">
+  <!-- ✅ CSS (carpeta con espacio -> usar %20) -->
+  <link rel="stylesheet" href="../../Model/csss%20estilos/estilos.css" />
 </head>
 <body>
 
-    <!-- ===== LAYOUT ===== -->
-    <div id="header"></div>
-    <!-- ================== -->
+  <!-- ===== LAYOUT ===== -->
+  <div id="header"></div>
+  <div id="nav"></div>
+  <!-- ================== -->
 
-    <!-- CONTENIDO CARRITO -->
-    <main class="cart-page">
-        <section class="cart-container">
+  <!-- CONTENIDO CARRITO -->
+  <main class="cart-page">
+    <section class="cart-container">
 
-            <h2>Resumen de tu carrito</h2>
+      <h2>Resumen de tu carrito</h2>
 
-            <div id="cart-vacio" class="cart-vacio">
-                Tu carrito está vacío. Agrega productos desde la página principal.
-            </div>
+      <div id="cart-vacio" class="cart-vacio">
+        Tu carrito está vacío. Agrega productos desde la página principal.
+      </div>
 
-            <div id="cart-contenido" class="cart-contenido">
-                <table class="cart-tabla">
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Precio unit.</th>
-                            <th>Cantidad</th>
-                            <th>Subtotal</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbodyCarrito">
-                        <!-- filas generadas por JS -->
-                    </tbody>
-                </table>
+      <div id="cart-contenido" class="cart-contenido">
+        <table class="cart-tabla">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Precio unit.</th>
+              <th>Cantidad</th>
+              <th>Subtotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbodyCarrito">
+            <!-- filas generadas por JS -->
+          </tbody>
+        </table>
 
-                <div class="cart-footer">
-                    <button id="btnVaciar" class="btn-cart-secondary">Vaciar carrito</button>
+        <div class="cart-footer">
+          <button id="btnVaciar" class="btn-cart-secondary">Vaciar carrito</button>
 
-                    <div class="cart-total">
-                        <span>Total:</span>
-                        <strong id="totalCarrito">$0.00</strong>
-                    </div>
-                </div>
+          <div class="cart-total">
+            <span>Total:</span>
+            <strong id="totalCarrito">$0.00</strong>
+          </div>
+        </div>
 
-                <button class="btn-cart-primary">
-                    Finalizar compra (demo)
-                </button>
-            </div>
+        <div id="paypal-area" style="margin-top:12px;">
+          <div id="paypal-button-container"></div>
+          <p id="paypal-status" style="margin-top:10px;"></p>
+        </div>
+      </div>
 
-        </section>
-    </main>
+    </section>
+  </main>
 
-    <!-- ===== FOOTER ===== -->
-    <div id="footer"></div>
-    <div id="scripts"></div>
-    <!-- ================== -->
+  <!-- ===== FOOTER ===== -->
+  <div id="footer"></div>
+  <div id="scripts"></div>
+  <!-- ================== -->
 
-    <script>
-        // ----- LÓGICA DEL CARRITO EN LA PÁGINA CARRITO -----
-        function obtenerCarrito() {
-            return JSON.parse(localStorage.getItem('carritoMega') || '[]');
+  <!-- ✅ LAYOUT LOADER (IMPORTANTE: antes de llamar loadLayout) -->
+  <script src="../js/layout-loader.js"></script>
+
+  <!-- ✅ SOLO EN CARRITO: forzar que cargue el header/nav/footer -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (typeof loadLayout === "function") {
+        loadLayout();
+      }
+    });
+  </script>
+
+  <script>
+    // =========================
+    // CARRITO (localStorage)
+    // =========================
+    function obtenerCarrito() {
+      return JSON.parse(localStorage.getItem("carritoMega") || "[]");
+    }
+
+    function guardarCarrito(carrito) {
+      localStorage.setItem("carritoMega", JSON.stringify(carrito));
+    }
+
+    function formatearDinero(valor) {
+      return "$" + Number(valor).toFixed(2);
+    }
+
+    function renderCarrito() {
+      const tbody = document.getElementById("tbodyCarrito");
+      const divVacio = document.getElementById("cart-vacio");
+      const divContenido = document.getElementById("cart-contenido");
+      const spanTotal = document.getElementById("totalCarrito");
+
+      const carrito = obtenerCarrito();
+      tbody.innerHTML = "";
+
+      if (carrito.length === 0) {
+        divVacio.style.display = "block";
+        divContenido.style.display = "none";
+        spanTotal.textContent = "$0.00";
+        return;
+      }
+
+      divVacio.style.display = "none";
+      divContenido.style.display = "block";
+
+      let total = 0;
+
+      carrito.forEach((item) => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${item.nombre}</td>
+          <td>${formatearDinero(item.precio)}</td>
+          <td>
+            <input type="number" min="1" value="${item.cantidad}"
+                  class="cart-cantidad" data-id="${item.id}">
+          </td>
+          <td>${formatearDinero(subtotal)}</td>
+          <td>
+            <button class="btn-cart-delete" data-id="${item.id}">✕</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      spanTotal.textContent = formatearDinero(total);
+    }
+
+    // Cambiar cantidad
+    document.addEventListener("change", function (e) {
+      if (e.target.classList.contains("cart-cantidad")) {
+        const id = e.target.getAttribute("data-id");
+        let nuevaCantidad = parseInt(e.target.value, 10);
+        if (isNaN(nuevaCantidad) || nuevaCantidad < 1) nuevaCantidad = 1;
+        e.target.value = nuevaCantidad;
+
+        const carrito = obtenerCarrito();
+        const item = carrito.find((p) => String(p.id) === String(id));
+        if (item) {
+          item.cantidad = nuevaCantidad;
+          guardarCarrito(carrito);
+          renderCarrito();
+          cargarPayPalSDK();
         }
+      }
+    });
 
-        function guardarCarrito(carrito) {
-            localStorage.setItem('carritoMega', JSON.stringify(carrito));
-        }
+    // Eliminar producto
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("btn-cart-delete")) {
+        const id = e.target.getAttribute("data-id");
+        let carrito = obtenerCarrito();
+        carrito = carrito.filter((p) => String(p.id) !== String(id));
+        guardarCarrito(carrito);
+        renderCarrito();
+        cargarPayPalSDK();
+      }
+    });
 
-        function formatearDinero(valor) {
-            return '$' + Number(valor).toFixed(2);
-        }
-
-        function renderCarrito() {
-            const tbody = document.getElementById('tbodyCarrito');
-            const divVacio = document.getElementById('cart-vacio');
-            const divContenido = document.getElementById('cart-contenido');
-            const spanTotal = document.getElementById('totalCarrito');
-
-            const carrito = obtenerCarrito();
-            tbody.innerHTML = '';
-
-            if (carrito.length === 0) {
-                divVacio.style.display = 'block';
-                divContenido.style.display = 'none';
-                spanTotal.textContent = '$0.00';
-                return;
-            }
-
-            divVacio.style.display = 'none';
-            divContenido.style.display = 'block';
-
-            let total = 0;
-
-            carrito.forEach(item => {
-                const subtotal = item.precio * item.cantidad;
-                total += subtotal;
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${item.nombre}</td>
-                    <td>${formatearDinero(item.precio)}</td>
-                    <td>
-                        <input type="number" min="1" value="${item.cantidad}"
-                               class="cart-cantidad" data-id="${item.id}">
-                    </td>
-                    <td>${formatearDinero(subtotal)}</td>
-                    <td>
-                        <button class="btn-cart-delete" data-id="${item.id}">✕</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            spanTotal.textContent = formatearDinero(total);
-        }
-
-        // Cambiar cantidad
-        document.addEventListener('change', function(e) {
-            if (e.target.classList.contains('cart-cantidad')) {
-                const id = e.target.getAttribute('data-id');
-                let nuevaCantidad = parseInt(e.target.value, 10);
-                if (isNaN(nuevaCantidad) || nuevaCantidad < 1) nuevaCantidad = 1;
-                e.target.value = nuevaCantidad;
-
-                const carrito = obtenerCarrito();
-                const item = carrito.find(p => p.id === id);
-                if (item) {
-                    item.cantidad = nuevaCantidad;
-                    guardarCarrito(carrito);
-                    renderCarrito();
-                }
-            }
-        });
-
-        // Eliminar producto
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('btn-cart-delete')) {
-                const id = e.target.getAttribute('data-id');
-                let carrito = obtenerCarrito();
-                carrito = carrito.filter(p => p.id !== id);
-                guardarCarrito(carrito);
-                renderCarrito();
-            }
-        });
-
-        // Vaciar carrito (ahora espera al DOM + plantilla)
-        function initCarritoPage() {
-            const btnVaciar = document.getElementById('btnVaciar');
-            if (btnVaciar) {
-                btnVaciar.addEventListener('click', function() {
-                    if (confirm('¿Seguro que quieres vaciar el carrito?')) {
-                        localStorage.removeItem('carritoMega');
-                        renderCarrito();
-                    }
-                });
-            }
+    // Vaciar carrito
+    function initCarritoPage() {
+      const btnVaciar = document.getElementById("btnVaciar");
+      if (btnVaciar) {
+        btnVaciar.addEventListener("click", function () {
+          if (confirm("¿Seguro que quieres vaciar el carrito?")) {
+            localStorage.removeItem("carritoMega");
             renderCarrito();
-        }
-
-        /* ===== ALIAS BUSCADOR (OPCIÓN 1) ===== */
-        function realizarBusquedaGlobal() {
-            const input = document.getElementById("buscador");
-            if (!input) return;
-            const q = input.value.trim();
-            if (!q) return;
-            window.location.href = "busqueda.html?q=" + encodeURIComponent(q);
-        }
-    </script>
-
-    <!-- ===== LAYOUT LOADER ===== -->
-    <script src="../js/layout-loader.js"></script>
-    <script>
-        // Cargar plantilla y luego iniciar carrito (por si el layout mete scripts o header)
-        loadLayout().then(() => {
-            initCarritoPage();
+            cargarPayPalSDK();
+          }
         });
-    </script>
+      }
+      renderCarrito();
+      cargarPayPalSDK();
+    }
+
+    // ✅ Inicializar carrito al cargar
+    document.addEventListener("DOMContentLoaded", initCarritoPage);
+
+    // =========================
+    // PAYPAL (Sandbox)
+    // =========================
+    const PAYPAL_API = "/MegaSantiagoFront/Controller/paypalController.php";
+    let paypalSDKLoaded = false;
+
+    function setStatus(msg, isError = false) {
+      const el = document.getElementById("paypal-status");
+      if (!el) return;
+      el.textContent = msg || "";
+      el.style.color = isError ? "crimson" : "inherit";
+    }
+
+    async function cargarPayPalSDK() {
+      const carrito = obtenerCarrito();
+      if (!carrito.length) {
+        // si el carrito queda vacío, limpiamos el contenedor de paypal
+        const cont = document.getElementById("paypal-button-container");
+        if (cont) cont.innerHTML = "";
+        setStatus("");
+        return;
+      }
+
+      // si ya está cargado el SDK, solo re-render
+      if (paypalSDKLoaded && window.paypal) {
+        renderPayPalButtons();
+        return;
+      }
+
+      const res = await fetch(PAYPAL_API + "?accion=config");
+      const cfg = await res.json();
+
+      if (!cfg.clientId || cfg.clientId === "PAYPAL_SANDBOX_CLIENT_ID") {
+        setStatus("⚠️ Falta configurar PayPal Sandbox (clientId/secret) en Model/paypal_credentials.php", true);
+        return;
+      }
+
+      const s = document.createElement("script");
+      s.src =
+        "https://www.paypal.com/sdk/js?client-id=" +
+        encodeURIComponent(cfg.clientId) +
+        "&currency=" +
+        encodeURIComponent(cfg.currency || "USD") +
+        "&intent=capture";
+
+      s.onload = () => {
+        paypalSDKLoaded = true;
+        renderPayPalButtons();
+      };
+      s.onerror = () => setStatus("No se pudo cargar el SDK de PayPal.", true);
+      document.head.appendChild(s);
+    }
+
+    function cartParaServidor() {
+      const carrito = obtenerCarrito();
+      return carrito.map((it) => ({
+        id: it.id,
+        cantidad: it.cantidad,
+      }));
+    }
+
+    function renderPayPalButtons() {
+      if (!window.paypal) {
+        setStatus("PayPal SDK no disponible.", true);
+        return;
+      }
+
+      // evitar render duplicado
+      const cont = document.getElementById("paypal-button-container");
+      if (cont) cont.innerHTML = "";
+
+      paypal.Buttons({
+        createOrder: async function () {
+          setStatus("Creando orden en PayPal...");
+          const resp = await fetch(PAYPAL_API + "?accion=create-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ cart: cartParaServidor() }),
+          });
+
+          const data = await resp.json();
+          if (!resp.ok) {
+            setStatus(data.error || "Error al crear la orden.", true);
+            throw new Error(data.error || "create-order failed");
+          }
+
+          setStatus("");
+          return data.id;
+        },
+
+        onApprove: async function (data) {
+          setStatus("Capturando pago...");
+          const resp = await fetch(PAYPAL_API + "?accion=capture-order", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId: data.orderID }),
+          });
+
+          const details = await resp.json();
+          if (!resp.ok) {
+            setStatus(details.error || "Error al capturar el pago.", true);
+            return;
+          }
+
+          const status = details.status || "";
+          if (status === "COMPLETED") {
+            setStatus("Pago completado. Gracias por tu compra.");
+            localStorage.removeItem("carritoMega");
+            renderCarrito();
+            cargarPayPalSDK();
+          } else {
+            setStatus("Pago procesado con estado: " + status);
+          }
+        },
+
+        onCancel: function () {
+          setStatus("Pago cancelado.");
+        },
+
+        onError: function (err) {
+          console.error(err);
+          setStatus("Ocurrió un error con PayPal.", true);
+        },
+      }).render("#paypal-button-container");
+    }
+  </script>
 
 </body>
 </html>
