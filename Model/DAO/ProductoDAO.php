@@ -160,4 +160,91 @@ class ProductoDAO
         $stmt->execute($ids);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Devuelve el detalle completo de un producto.
+     * Si en el futuro agregas variantes (colores/tallas), este método se puede extender.
+     */
+    public function obtenerDetalle(int $idProducto): ?array
+    {
+        $sql = "
+            SELECT
+                p.id_producto AS id,
+                p.nombre,
+                p.descripcion_corta,
+                p.descripcion_larga,
+                p.precio,
+                p.precio_oferta,
+                p.sku,
+                p.aplica_iva,
+                c.id_categoria,
+                c.nombre AS categoria_nombre,
+                c.slug   AS categoria_slug
+            FROM productos p
+            JOIN categorias c ON c.id_categoria = p.id_categoria
+            WHERE p.id_producto = :id
+              AND p.activo = 1
+            LIMIT 1
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([":id" => $idProducto]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$row) return null;
+
+        $row["imagenes"] = $this->obtenerImagenes($idProducto);
+
+        // Por defecto no manejamos variantes.
+        $row["colores"] = [];
+
+        return $row;
+    }
+
+    public function obtenerImagenes(int $idProducto): array
+    {
+        $sql = "
+            SELECT url_imagen, es_principal, orden
+            FROM producto_imagenes
+            WHERE id_producto = :id
+            ORDER BY es_principal DESC, orden ASC, id_imagen ASC
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([":id" => $idProducto]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function relacionados(int $idProducto, int $limit = 4): array
+    {
+        $limit = max(1, (int)$limit);
+
+        // Toma la categoría del producto y devuelve otros productos de esa misma categoría.
+        $sql = "
+            SELECT
+                p.id_producto AS id,
+                p.nombre,
+                p.descripcion_corta,
+                p.precio,
+                p.precio_oferta,
+                c.slug AS categoria,
+                (
+                    SELECT url_imagen
+                    FROM producto_imagenes i
+                    WHERE i.id_producto = p.id_producto
+                    ORDER BY i.es_principal DESC, i.orden ASC, i.id_imagen ASC
+                    LIMIT 1
+                ) AS imagen
+            FROM productos p
+            JOIN categorias c ON c.id_categoria = p.id_categoria
+            WHERE p.activo = 1
+              AND p.id_categoria = (SELECT id_categoria FROM productos WHERE id_producto = :id)
+              AND p.id_producto <> :id
+            ORDER BY p.fecha_creacion DESC, p.id_producto DESC
+            LIMIT {$limit}
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([":id" => $idProducto]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

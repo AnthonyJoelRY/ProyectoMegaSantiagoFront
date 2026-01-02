@@ -6,7 +6,8 @@
     <title>Resultados de búsqueda | MegaSantiago</title>
 
     <!-- CSS (desde View/pages → Model) -->
-    <link rel="stylesheet" href="../../Model/csss estilos/estilos.css" />
+    <link rel="stylesheet" href="../../View/assets/css/estilos.css" />
+  <link rel="stylesheet" href="../../View/assets/css/overrides.css">
   </head>
   <body>
     <!-- ===== LAYOUT ===== -->
@@ -34,7 +35,7 @@
 
     <script>
       // 🔹 Misma URL de la API que en bazar.html (NO TOCAR)
-      const API_URL = "/MegaSantiagoFront/Controller/productosController.php";
+      const API_URL = "../../Controller/productosController.php";
 
       /* ================== IMÁGENES (Firebase + local) ================== */
       // ✅ Esta página está en View/pages/, por eso el fallback local es ../../Model/...
@@ -86,7 +87,13 @@
 
       function guardarCarrito(carrito) {
         localStorage.setItem("carritoMega", JSON.stringify(carrito));
-      }
+                try { window.dispatchEvent(new Event("carrito_actualizado")); } catch(e) {}
+                if (typeof actualizarContadorCarrito === "function") actualizarContadorCarrito();
+try { window.dispatchEvent(new Event("carrito_actualizado")); } catch(e) {}
+        if (typeof actualizarContadorCarrito === "function") actualizarContadorCarrito();
+try { window.dispatchEvent(new Event("carrito_actualizado")); } catch(e) {}
+        if (typeof actualizarContadorCarrito === "function") actualizarContadorCarrito();
+}
 
       function agregarAlCarrito(id, nombre, precio) {
         let carrito = obtenerCarrito();
@@ -115,6 +122,7 @@
         article.className = "product-card";
         article.dataset.id = prod.id;
         article.dataset.precio = precioMostrar.toFixed(2);
+        article.style.cursor = "pointer";
 
         article.innerHTML = `
           <div class="product-image">
@@ -129,6 +137,13 @@
         btn.addEventListener("click", () => {
           agregarAlCarrito(prod.id, prod.nombre, precioMostrar);
           alert("Producto agregado al carrito");
+        });
+
+        // ✅ Ir a detalle (sin interferir con el botón)
+        article.addEventListener("click", (e) => {
+          if (e.target.closest("button")) return;
+          const base = window.PROJECT_BASE || "";
+          window.location.href = `${base}/View/pages/producto.html?id=${encodeURIComponent(prod.id)}`;
         });
 
         return article;
@@ -205,7 +220,7 @@
     </script>
 
     <!-- ===== LAYOUT LOADER ===== -->
-    <script src="../js/layout-loader.js"></script>
+    <script src="../assets/js/layout-loader.js"></script>
     <script>
       // ✅ Primero carga header/nav/footer/scripts, luego engancha eventos del buscador
       loadLayout().then(() => {

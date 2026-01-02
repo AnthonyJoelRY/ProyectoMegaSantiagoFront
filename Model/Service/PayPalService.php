@@ -1,7 +1,7 @@
 <?php
 // Model/Service/PayPalService.php
 
-require_once __DIR__ . "/../paypal_credentials.php";
+require_once __DIR__ . '/../Config/paypal_credentials.php';
 require_once __DIR__ . "/../DAO/ProductoDAO.php";
 
 class PayPalService
@@ -114,7 +114,7 @@ class PayPalService
     {
         if ($this->clientId === "" || $this->clientSecret === "" ||
             $this->clientId === "PAYPAL_SANDBOX_CLIENT_ID" || $this->clientSecret === "PAYPAL_SANDBOX_CLIENT_SECRET") {
-            return ["error" => "Configura PAYPAL_SANDBOX_CLIENT_ID y PAYPAL_SANDBOX_CLIENT_SECRET en Model/paypal_credentials.php"];
+            return ["error" => "Configura PAYPAL_SANDBOX_CLIENT_ID y PAYPAL_SANDBOX_CLIENT_SECRET en Model/Config/paypal_credentials.php"];
         }
 
         $ch = curl_init();

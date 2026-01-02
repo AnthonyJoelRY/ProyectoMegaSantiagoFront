@@ -1,0 +1,17 @@
+/* Overrides para comportamiento del header/nav en hosting (InfinityFree)
+   Objetivo: que el header + navbar NO sean fijos/sticky, y hagan scroll normal. */
+
+.main-header,
+.nav-principal,
+.top-bar {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  z-index: auto !important;
+}
+
+/* Si antes se dejó espacio por header fijo, lo quitamos */
+body {
+  padding-top: 0 !important;
+}

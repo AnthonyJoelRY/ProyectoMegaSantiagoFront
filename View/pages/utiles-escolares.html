@@ -1,264 +1,107 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MegaSantiago | Útiles escolares</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MegaSantiago | Útiles escolares</title>
 
-    <!-- CSS (desde View/pages → Model) -->
-    <link rel="stylesheet" href="../../Model/csss estilos/estilos.css">
+  <!-- ✅ InfinityFree: rutas absolutas -->
+  <link rel="stylesheet" href="/View/assets/css/estilos.css">
+  <link rel="stylesheet" href="/View/assets/css/overrides.css">
 </head>
+
 <body>
 
-    <!-- ===== LAYOUT ===== -->
-    <div id="header"></div>
-    <div id="nav"></div>
-    <!-- ================== -->
+  <!-- ===== LAYOUT ===== -->
+  <div id="header"></div>
+  <div id="nav"></div>
+  <!-- ================== -->
 
-    <!-- HERO -->
-    <section class="category-hero">
-        <div class="category-hero-inner">
-            <h1>Útiles escolares</h1>
-            <p>Listo para el regreso a clases: mochilas, cuadernos y más.</p>
+  <!-- HERO -->
+  <section class="category-hero">
+    <div class="category-hero-inner">
+      <h1>Útiles escolares</h1>
+      <p>Listo para el regreso a clases: mochilas, cuadernos y más.</p>
+    </div>
+  </section>
+
+  <!-- CONTENIDO -->
+  <main class="category-page">
+    <div class="category-layout">
+
+      <!-- SIDEBAR -->
+      <aside class="category-sidebar">
+        <h3>Categorías</h3>
+        <ul class="category-list">
+          <li><a href="bazar.html">Bazar</a></li>
+          <li><a href="papeleria.html">Papelería</a></li>
+          <li><a href="productos-arte.html">Productos de arte</a></li>
+          <li><a href="suministros-oficina.html">Suministros de oficina</a></li>
+          <li class="active"><a href="utiles-escolares.html">Útiles escolares</a></li>
+        </ul>
+
+        <div class="sidebar-block">
+          <h4>Filtrar por</h4>
+          <label class="sidebar-label">Tipo</label>
+          <select class="sidebar-select sidebar-select-tipo">
+            <option value="todos">Cualquier tipo</option>
+            <option value="mochilas">Mochilas</option>
+            <option value="cuadernos">Cuadernos</option>
+            <option value="lapiceros">Lapiceros</option>
+            <option value="colores">Colores</option>
+          </select>
         </div>
-    </section>
 
-    <!-- CONTENIDO -->
-    <main class="category-page">
-        <div class="category-layout">
-
-            <!-- SIDEBAR -->
-            <aside class="category-sidebar">
-                <h3>Categorías</h3>
-                <ul class="category-list">
-                    <li><a href="bazar.html">Bazar</a></li>
-                    <li><a href="papeleria.html">Papelería</a></li>
-                    <li><a href="productos-arte.html">Productos de arte</a></li>
-                    <li><a href="suministros-oficina.html">Suministros de oficina</a></li>
-                    <li class="active"><a href="utiles-escolares.html">Útiles escolares</a></li>
-                </ul>
-
-                <div class="sidebar-block">
-                    <h4>Filtrar por</h4>
-                    <label class="sidebar-label">Tipo</label>
-                    <select class="sidebar-select sidebar-select-tipo">
-                        <option value="todos">Cualquier tipo</option>
-                        <option value="mochilas">Mochilas</option>
-                        <option value="cuadernos">Cuadernos</option>
-                        <option value="lapiceros">Lapiceros</option>
-                        <option value="colores">Colores</option>
-                    </select>
-                </div>
-
-                <div class="sidebar-block">
-                    <h4>Filtrar por precio</h4>
-                    <input type="range" min="0" max="90" value="35" class="sidebar-range">
-                    <div class="sidebar-range-info">Precio máx: $35</div>
-                    <button class="btn-sidebar">FILTRAR</button>
-                </div>
-            </aside>
-
-            <!-- PRODUCTOS -->
-            <section class="category-main">
-                <div class="category-main-header">
-                    <p id="textoResultadosEscolar">Mostrando 0 resultados</p>
-                    <div class="category-sort">
-                        <label for="ordenEscolar">Ordenar por:</label>
-                        <select id="ordenEscolar" class="sidebar-select">
-                            <option value="default">Predeterminado</option>
-                            <option value="precio-asc">Precio: menor a mayor</option>
-                            <option value="precio-desc">Precio: mayor a menor</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div id="gridEscolar" class="product-grid">
-                    <!-- Se llena con productos desde la BD -->
-                </div>
-            </section>
+        <div class="sidebar-block">
+          <h4>Filtrar por precio</h4>
+          <input type="range" min="0" max="90" value="35" class="sidebar-range">
+          <div class="sidebar-range-info">Precio máx: $35</div>
+          <button class="btn-sidebar">FILTRAR</button>
         </div>
-    </main>
+      </aside>
 
-    <!-- ===== FOOTER ===== -->
-    <div id="footer"></div>
-    <div id="scripts"></div>
-    <!-- ================== -->
+      <!-- PRODUCTOS -->
+      <section class="category-main">
+        <div class="category-main-header">
+          <p id="textoResultadosEscolar">Mostrando 0 resultados</p>
+          <div class="category-sort">
+            <label for="ordenEscolar">Ordenar por:</label>
+            <select id="ordenEscolar" class="sidebar-select">
+              <option value="default">Predeterminado</option>
+              <option value="precio-asc">Precio: menor a mayor</option>
+              <option value="precio-desc">Precio: mayor a menor</option>
+            </select>
+          </div>
+        </div>
 
-    <!-- ============================= -->
-    <!--   JS ÚTILES ESCOLARES (BD)   -->
-    <!-- ============================= -->
-    <script>
-        const API_URL = "/MegaSantiagoFront/Controller/productosController.php";
+        <div id="gridEscolar" class="product-grid"></div>
+      </section>
 
-        function resolverImagen(img) {
-      if (!img || String(img).trim() === "") return "/MegaSantiagoFront/Model/imagenes/sin-imagen.png";
-      const limpia = String(img).trim();
-      if (limpia.startsWith("http://") || limpia.startsWith("https://")) return limpia;
-      return "/MegaSantiagoFront/Model/" + limpia;
-    }
+    </div>
+  </main>
 
-    function formatearDinero(valor) {
-            return "$" + Number(valor).toFixed(2);
-        }
+  <!-- ===== FOOTER ===== -->
+  <div id="footer"></div>
+  <div id="scripts"></div>
+  <!-- ================== -->
 
-        function detectarTipoEscolar(nombre) {
-            const n = (nombre || "").toLowerCase();
-            if (n.includes("mochila"))   return "mochilas";
-            if (n.includes("cuaderno"))  return "cuadernos";
-            if (n.includes("estuche") || n.includes("lapicero") || n.includes("lápiz")) return "lapiceros";
-            if (n.includes("color") || n.includes("marcador")) return "colores";
-            return "otros";
-        }
+  <!-- ✅ Layout loader -->
+  <script src="/View/assets/js/layout-loader.js"></script>
 
-        function crearTarjetaEscolar(prod) {
-            const precioBase    = parseFloat(prod.precio);
-            const precioOferta  = prod.precio_oferta ? parseFloat(prod.precio_oferta) : null;
-            const precioMostrar = (precioOferta && precioOferta > 0) ? precioOferta : precioBase;
+  <!-- ✅ Lógica de esta página -->
+  <script src="/View/assets/js/pages/utiles-escolares.js"></script>
 
-            const rutaImagen = resolverImagen(prod.imagen);
+  <!-- ✅ Ejecutar después de loadLayout -->
+  <script>
+    loadLayout().then(() => {
+      window.initEscolarPage?.();
 
-            const tipo = detectarTipoEscolar(prod.nombre);
-
-            return `
-                <article class="product-card"
-                         data-id="${prod.id}"
-                         data-precio="${precioMostrar}"
-                         data-tipo="${tipo}">
-                    <div class="product-image">
-                        <img src="${rutaImagen}" alt="${prod.nombre}">
-                    </div>
-                    <h3>${prod.nombre}</h3>
-                    <p class="product-price">${formatearDinero(precioMostrar)} + IVA</p>
-                    <button class="btn-add-grid" type="button">Agregar al carrito</button>
-                </article>
-            `;
-        }
-
-        async function cargarProductosEscolares() {
-            const grid  = document.getElementById("gridEscolar");
-            const texto = document.getElementById("textoResultadosEscolar");
-
-            grid.innerHTML = "<p>Cargando productos...</p>";
-
-            try {
-                // Slug categoría: 'utiles'
-                const resp = await fetch(`${API_URL}?accion=listarPorCategoria&categoria=utiles`);
-                const data = await resp.json();
-
-                if (data.error) {
-                    grid.innerHTML = `<p>Error: ${data.error}</p>`;
-                    texto.textContent = "Mostrando 0 resultados";
-                    return;
-                }
-
-                if (!Array.isArray(data) || data.length === 0) {
-                    grid.innerHTML = "<p>No hay productos de útiles escolares.</p>";
-                    texto.textContent = "Mostrando 0 resultados";
-                    return;
-                }
-
-                grid.innerHTML = data.map(crearTarjetaEscolar).join("");
-                texto.textContent =
-                    `Mostrando ${data.length} resultado${data.length > 1 ? "s" : ""}`;
-
-                inicializarOrdenEscolar();
-                inicializarFiltrosEscolar();
-                inicializarCarritoEscolar();
-
-            } catch (err) {
-                console.error(err);
-                grid.innerHTML = "<p>Error al cargar productos.</p>";
-                texto.textContent = "Mostrando 0 resultados";
-            }
-        }
-
-        function inicializarOrdenEscolar() {
-            const selectOrden = document.getElementById('ordenEscolar');
-            const grid = document.getElementById('gridEscolar');
-
-            selectOrden.addEventListener('change', () => {
-                const opcion = selectOrden.value;
-                const cards = Array.from(grid.querySelectorAll('.product-card'));
-                if (opcion === 'default') return;
-
-                cards.sort((a, b) => {
-                    const pa = parseFloat(a.dataset.precio);
-                    const pb = parseFloat(b.dataset.precio);
-                    return opcion === 'precio-asc' ? pa - pb : pb - pa;
-                });
-
-                cards.forEach(c => grid.appendChild(c));
-            });
-        }
-
-        function inicializarFiltrosEscolar() {
-            const grid        = document.getElementById('gridEscolar');
-            const selectTipo  = document.querySelector('.sidebar-select-tipo');
-            const rangePrecio = document.querySelector('.sidebar-range');
-            const infoPrecio  = document.querySelector('.sidebar-range-info');
-            const btnFiltrar  = document.querySelector('.btn-sidebar');
-
-            infoPrecio.textContent = 'Precio máx: $' + rangePrecio.value;
-
-            rangePrecio.addEventListener('input', () => {
-                infoPrecio.textContent = 'Precio máx: $' + rangePrecio.value;
-            });
-
-            btnFiltrar.addEventListener('click', () => {
-                const tipoSeleccionado = selectTipo.value;
-                const maxPrecio = parseFloat(rangePrecio.value);
-
-                Array.from(grid.querySelectorAll('.product-card')).forEach(card => {
-                    const precio   = parseFloat(card.dataset.precio);
-                    const tipoCard = card.dataset.tipo;
-
-                    const okTipo   = tipoSeleccionado === 'todos' || tipoCard === tipoSeleccionado;
-                    const okPrecio = precio <= maxPrecio;
-
-                    card.style.display = (okTipo && okPrecio) ? '' : 'none';
-                });
-            });
-        }
-
-        function inicializarCarritoEscolar() {
-            const grid = document.getElementById('gridEscolar');
-
-            grid.addEventListener('click', (e) => {
-                if (!e.target.classList.contains('btn-add-grid')) return;
-
-                const card   = e.target.closest('.product-card');
-                const id     = card.dataset.id;
-                const nombre = card.querySelector('h3').textContent;
-                const precio = parseFloat(card.dataset.precio);
-
-                let carrito  = JSON.parse(localStorage.getItem('carritoMega') || '[]');
-                const existe = carrito.find(p => p.id === id);
-
-                if (existe) existe.cantidad += 1;
-                else carrito.push({ id, nombre, precio, cantidad: 1 });
-
-                localStorage.setItem('carritoMega', JSON.stringify(carrito));
-                alert('Producto agregado al carrito');
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', cargarProductosEscolares);
-
-        /* ===== ALIAS BUSCADOR (OPCIÓN 1) ===== */
-        function realizarBusquedaGlobal() {
-            const input = document.getElementById("buscador");
-            if (!input) return;
-            const q = input.value.trim();
-            if (!q) return;
-            window.location.href = "busqueda.html?q=" + encodeURIComponent(q);
-        }
-    </script>
-
-    <!-- ===== LAYOUT LOADER ===== -->
-    <script src="../js/layout-loader.js"></script>
-    <script>
-        loadLayout();
-    </script>
+      // (Opcional) sesión usuario
+      const s = document.createElement("script");
+      s.src = "/View/assets/js/sesion-usuario.js";
+      document.body.appendChild(s);
+    });
+  </script>
 
 </body>
 </html>

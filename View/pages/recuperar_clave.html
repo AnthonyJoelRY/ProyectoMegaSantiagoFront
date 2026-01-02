@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MegaSantiago | Recuperar clave</title>
+
+  <!-- ✅ Rutas absolutas para InfinityFree -->
+  <link rel="stylesheet" href="/View/assets/css/estilos.css">
+  <link rel="stylesheet" href="/View/assets/css/overrides.css">
+</head>
+<body>
+
+  <!-- ===== LAYOUT ===== -->
+  <div id="header"></div>
+  <div id="nav"></div>
+  <!-- ================== -->
+
+  <main class="auth-page" style="padding: 24px;">
+    <h1>Recuperar contraseña</h1>
+    <p>Ingresa tu correo y te enviaremos instrucciones para restablecer tu contraseña.</p>
+
+    <form id="form-recuperar" style="max-width: 420px;">
+      <label for="email">Correo</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        required
+        style="width:100%;padding:10px;margin:8px 0 12px 0;"
+      />
+
+      <button type="submit" style="padding:10px 14px;">
+        Enviar
+      </button>
+    </form>
+
+    <p style="margin-top: 14px;">
+      <a href="/View/pages/login.html">Volver a iniciar sesión</a>
+    </p>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <div id="footer"></div>
+  <div id="scripts"></div>
+  <!-- ================== -->
+
+  <!-- Layout -->
+  <script src="/View/assets/js/layout-loader.js"></script>
+
+  <!-- Lógica de la página -->
+  <script src="/View/assets/js/pages/recuperar-clave.js"></script>
+</body>
+</html>

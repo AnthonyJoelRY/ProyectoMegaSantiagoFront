@@ -6,7 +6,8 @@
     <title>MegaSantiago | Inicio</title>
 
     <!-- ✅ CSS (con %20 por el espacio en la carpeta) -->
-    <link rel="stylesheet" href="Model/csss%20estilos/estilos.css" />
+    <link rel="stylesheet" href="/View/assets/css/estilos.css" />
+  <link rel="stylesheet" href="/View/assets/css/overrides.css">
   </head>
   <body>
     <!-- ===== LAYOUT ===== -->
@@ -46,16 +47,16 @@
     <!-- ================== -->
 
     <script>
-      const API_URL = "Controller/productosController.php";
+      const API_URL = "/Controller/productosController.php";
 
       function resolverImagen(img) {
-      if (!img || String(img).trim() === "") return "Model/imagenes/sin-imagen.png";
-      const limpia = String(img).trim();
-      if (limpia.startsWith("http://") || limpia.startsWith("https://")) return limpia;
-      return "Model/" + limpia;
-    }
+        if (!img || String(img).trim() === "") return "/Model/imagenes/sin-imagen.png";
+        const limpia = String(img).trim();
+        if (limpia.startsWith("http://") || limpia.startsWith("https://")) return limpia;
+        return "/Model/" + limpia;
+      }
 
-    function formatearDinero(valor) {
+      function formatearDinero(valor) {
         return "$" + Number(valor).toFixed(2);
       }
 
@@ -65,7 +66,13 @@
 
       function guardarCarrito(carrito) {
         localStorage.setItem("carritoMega", JSON.stringify(carrito));
-      }
+                try { window.dispatchEvent(new Event("carrito_actualizado")); } catch(e) {}
+                if (typeof actualizarContadorCarrito === "function") actualizarContadorCarrito();
+try { window.dispatchEvent(new Event("carrito_actualizado")); } catch(e) {}
+        if (typeof actualizarContadorCarrito === "function") actualizarContadorCarrito();
+try { window.dispatchEvent(new Event("carrito_actualizado")); } catch(e) {}
+        if (typeof actualizarContadorCarrito === "function") actualizarContadorCarrito();
+}
 
       function agregarAlCarrito(id, nombre, precio) {
         let carrito = obtenerCarrito();
@@ -93,10 +100,21 @@
         });
       }
 
-      /* ✅ BasePath seguro: /MegaSantiagoFront */
+      // ✅ Ir a detalle al hacer click en la card (excepto en el botón)
+      function wireIrDetalle(selectorCards) {
+        document.querySelectorAll(selectorCards).forEach((card) => {
+          card.addEventListener("click", (e) => {
+            if (e.target.closest("button")) return;
+            const id = card.dataset.id;
+            const base = getBasePath();
+            window.location.href = `${base}/View/pages/producto.html?id=${encodeURIComponent(id)}`;
+          });
+        });
+      }
+
+      /* ✅ BasePath dinámico (funciona en raíz o subcarpeta) */
       function getBasePath() {
-        const parts = window.location.pathname.split("/").filter(Boolean);
-        return parts.length ? "/" + parts[0] : "";
+        return window.PROJECT_BASE || "";
       }
 
       /* ✅ Función real de búsqueda */
@@ -108,9 +126,7 @@
         if (!valor) return;
 
         const base = getBasePath();
-        window.location.href = `${base}/View/pages/busqueda.html?q=${encodeURIComponent(
-          valor
-        )}`;
+        window.location.href = `${base}/View/pages/busqueda.html?q=${encodeURIComponent(valor)}`;
       }
 
       /* ✅ IMPORTANTÍSIMO: el header llama a realizarBusquedaGlobal() */
@@ -128,27 +144,24 @@
         const rutaImagen = resolverImagen(prod.imagen);
 
         return `
-        <article class="card-categoria"
-                 data-id="${prod.id}"
-                 data-nombre="${prod.nombre}"
-                 data-precio="${precio}">
-            <div class="circulo-img">
-                <img src="${rutaImagen}" alt="${prod.nombre}">
-            </div>
-            <h3>${prod.nombre}</h3>
-            <p class="best-price">${formatearDinero(precio)} + IVA</p>
-            <button class="btn-best">Agregar al carrito</button>
-        </article>
-    `;
+          <article class="card-categoria"
+                   data-id="${prod.id}"
+                   data-nombre="${prod.nombre}"
+                   data-precio="${precio}">
+              <div class="circulo-img">
+                  <img src="${rutaImagen}" alt="${prod.nombre}">
+              </div>
+              <h3>${prod.nombre}</h3>
+              <p class="best-price">${formatearDinero(precio)} + IVA</p>
+              <button class="btn-best">Agregar al carrito</button>
+          </article>
+        `;
       }
 
       function crearCardOferta(prod) {
         const precioBase = parseFloat(prod.precio);
-        const precioOferta = prod.precio_oferta
-          ? parseFloat(prod.precio_oferta)
-          : null;
-        const precioMostrado =
-          precioOferta && precioOferta > 0 ? precioOferta : precioBase;
+        const precioOferta = prod.precio_oferta ? parseFloat(prod.precio_oferta) : null;
+        const precioMostrado = precioOferta && precioOferta > 0 ? precioOferta : precioBase;
 
         let textoDescuento = "";
         if (precioOferta && precioOferta > 0 && precioOferta < precioBase) {
@@ -159,40 +172,29 @@
         const rutaImagen = resolverImagen(prod.imagen);
 
         return `
-                <article class="card-producto"
-                         data-id="${prod.id}"
-                         data-nombre="${prod.nombre}"
-                         data-precio="${precioMostrado}">
-                    ${
-                      textoDescuento
-                        ? `<span class="descuento">${textoDescuento}</span>`
-                        : ""
-                    }
-                    <div class="img-producto">
-                        <img src="${rutaImagen}" alt="${prod.nombre}">
-                    </div>
-                    <p class="nombre-producto">${prod.nombre}</p>
-                    ${
-                      precioOferta &&
-                      precioOferta > 0 &&
-                      precioOferta < precioBase
-                        ? `
-                            <p class="precio-anterior">${formatearDinero(
-                              precioBase
-                            )}</p>
-                            <p class="precio-actual">${formatearDinero(
-                              precioMostrado
-                            )}</p>
-                          `
-                        : `
-                            <p class="precio-actual">${formatearDinero(
-                              precioMostrado
-                            )}</p>
-                          `
-                    }
-                    <button class="btn-add">+</button>
-                </article>
-            `;
+          <article class="card-producto"
+                   data-id="${prod.id}"
+                   data-nombre="${prod.nombre}"
+                   data-precio="${precioMostrado}"
+                   style="cursor:pointer;">
+              ${textoDescuento ? `<span class="descuento">${textoDescuento}</span>` : ""}
+              <div class="img-producto">
+                  <img src="${rutaImagen}" alt="${prod.nombre}">
+              </div>
+              <p class="nombre-producto">${prod.nombre}</p>
+              ${
+                precioOferta && precioOferta > 0 && precioOferta < precioBase
+                  ? `
+                      <p class="precio-anterior">${formatearDinero(precioBase)}</p>
+                      <p class="precio-actual">${formatearDinero(precioMostrado)}</p>
+                    `
+                  : `
+                      <p class="precio-actual">${formatearDinero(precioMostrado)}</p>
+                    `
+              }
+              <button class="btn-add">+</button>
+          </article>
+        `;
       }
 
       async function cargarMasVendidos() {
@@ -211,6 +213,9 @@
 
           cont.innerHTML = data.map(crearCardMasVendido).join("");
           wireBotonesCarrito("#gridMasVendidos .btn-best");
+
+          // ✅ FIX: en más vendidos las cards son .card-categoria (no .card-producto)
+          wireIrDetalle("#gridMasVendidos .card-categoria");
         } catch (err) {
           console.error(err);
           cont.innerHTML = "<p>Error al cargar los productos.</p>";
@@ -233,6 +238,7 @@
 
           cont.innerHTML = data.map(crearCardOferta).join("");
           wireBotonesCarrito("#gridOfertas .btn-add");
+          wireIrDetalle("#gridOfertas .card-producto");
         } catch (err) {
           console.error(err);
           cont.innerHTML = "<p>Error al cargar las ofertas.</p>";
@@ -254,6 +260,7 @@
 
           cont.innerHTML = data.map(crearCardOferta).join("");
           wireBotonesCarrito("#gridPromos .btn-add");
+          wireIrDetalle("#gridPromos .card-producto");
         } catch (err) {
           console.error(err);
           cont.innerHTML = "<p>Error al cargar promociones.</p>";
@@ -275,7 +282,7 @@
     </script>
 
     <!-- LAYOUT -->
-    <script src="View/js/layout-loader.js"></script>
+    <script src="/View/assets/js/layout-loader.js"></script>
 
     <script>
       loadLayout().then(() => {
@@ -283,13 +290,8 @@
 
         // ✅ Cargar sesión usuario DESPUÉS del layout
         const s = document.createElement("script");
-        s.src = "Model/js/sesion-usuario.js";
+        s.src = "View/assets/js/sesion-usuario.js";
         document.body.appendChild(s);
-
-        // ✅ (opcional) si tu header NO incluye busqueda-global.js, lo agregas:
-        // const b = document.createElement("script");
-        // b.src = "Model/js/busqueda-global.js";
-        // document.body.appendChild(b);
       });
     </script>
   </body>

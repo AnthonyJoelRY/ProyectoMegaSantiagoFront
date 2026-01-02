@@ -1,252 +1,107 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MegaSantiago | Papelería</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MegaSantiago | Papelería</title>
 
-    <!-- CSS (desde View/pages → Model) -->
-    <link rel="stylesheet" href="../../Model/csss estilos/estilos.css">
+  <!-- ✅ InfinityFree: rutas absolutas -->
+  <link rel="stylesheet" href="/View/assets/css/estilos.css">
+  <link rel="stylesheet" href="/View/assets/css/overrides.css">
 </head>
+
 <body>
 
-    <!-- ===== LAYOUT ===== -->
-    <div id="header"></div>
-    <div id="nav"></div>
-    <!-- ================== -->
+  <!-- ===== LAYOUT ===== -->
+  <div id="header"></div>
+  <div id="nav"></div>
+  <!-- ================== -->
 
-    <!-- HERO -->
-    <section class="category-hero hero-papeleria">
-        <div class="category-hero-inner">
-            <h1>Papelería</h1>
-            <p>Cartulinas, papeles especiales y todo lo que necesitas para tus proyectos.</p>
+  <!-- HERO -->
+  <section class="category-hero hero-papeleria">
+    <div class="category-hero-inner">
+      <h1>Papelería</h1>
+      <p>Cartulinas, papeles especiales y todo lo que necesitas para tus proyectos.</p>
+    </div>
+  </section>
+
+  <!-- LAYOUT CATÁLOGO -->
+  <main class="category-page">
+    <div class="category-layout">
+
+      <!-- SIDEBAR -->
+      <aside class="category-sidebar">
+        <h3>Categorías</h3>
+        <ul class="category-list">
+          <li><a href="bazar.html">Bazar</a></li>
+          <li class="active"><a href="papeleria.html">Papelería</a></li>
+          <li><a href="productos-arte.html">Productos de arte</a></li>
+          <li><a href="suministros-oficina.html">Suministros de oficina</a></li>
+          <li><a href="utiles-escolares.html">Útiles escolares</a></li>
+        </ul>
+
+        <div class="sidebar-block">
+          <h4>Filtrar por</h4>
+          <label class="sidebar-label">Tipo</label>
+          <select class="sidebar-select sidebar-select-tipo">
+            <option value="todos">Cualquier tipo</option>
+            <option value="cartulina">Cartulina</option>
+            <option value="papel">Papel bond</option>
+            <option value="corrugado">Cartón corrugado</option>
+          </select>
         </div>
-    </section>
 
-    <!-- LAYOUT CATÁLOGO -->
-    <main class="category-page">
-        <div class="category-layout">
-
-            <!-- SIDEBAR -->
-            <aside class="category-sidebar">
-                <h3>Categorías</h3>
-                <ul class="category-list">
-                    <li><a href="bazar.html">Bazar</a></li>
-                    <li class="active"><a href="papeleria.html">Papelería</a></li>
-                    <li><a href="productos-arte.html">Productos de arte</a></li>
-                    <li><a href="suministros-oficina.html">Suministros de oficina</a></li>
-                    <li><a href="utiles-escolares.html">Útiles escolares</a></li>
-                </ul>
-
-                <div class="sidebar-block">
-                    <h4>Filtrar por</h4>
-                    <label class="sidebar-label">Tipo</label>
-                    <select class="sidebar-select sidebar-select-tipo">
-                        <option value="todos">Cualquier tipo</option>
-                        <option value="cartulina">Cartulina</option>
-                        <option value="papel">Papel bond</option>
-                        <option value="corrugado">Cartón corrugado</option>
-                    </select>
-                </div>
-
-                <div class="sidebar-block">
-                    <h4>Filtrar por precio</h4>
-                    <input type="range" min="0" max="50" value="25" class="sidebar-range">
-                    <div class="sidebar-range-info">Precio máx: $25</div>
-                    <button class="btn-sidebar">FILTRAR</button>
-                </div>
-            </aside>
-
-            <!-- CONTENIDO -->
-            <section class="category-main">
-                <div class="category-main-header">
-                    <p id="textoResultadosPapeleria">Mostrando 0 resultados</p>
-
-                    <div class="category-sort">
-                        <label for="ordenPapeleria">Ordenar por:</label>
-                        <select id="ordenPapeleria" class="sidebar-select">
-                            <option value="default">Predeterminado</option>
-                            <option value="precio-asc">Precio: menor a mayor</option>
-                            <option value="precio-desc">Precio: mayor a menor</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Productos desde la BD -->
-                <div id="gridPapeleria" class="product-grid"></div>
-            </section>
+        <div class="sidebar-block">
+          <h4>Filtrar por precio</h4>
+          <input type="range" min="0" max="50" value="25" class="sidebar-range">
+          <div class="sidebar-range-info">Precio máx: $25</div>
+          <button class="btn-sidebar">FILTRAR</button>
         </div>
-    </main>
+      </aside>
 
-    <!-- ===== FOOTER ===== -->
-    <div id="footer"></div>
-    <div id="scripts"></div>
-    <!-- ================== -->
+      <!-- CONTENIDO -->
+      <section class="category-main">
+        <div class="category-main-header">
+          <p id="textoResultadosPapeleria">Mostrando 0 resultados</p>
 
-    <!-- ============================= -->
-    <!--   JS PAPELERÍA (NO TOCADO)   -->
-    <!-- ============================= -->
-    <script>
-        const API_URL = "/MegaSantiagoFront/Controller/productosController.php";
+          <div class="category-sort">
+            <label for="ordenPapeleria">Ordenar por:</label>
+            <select id="ordenPapeleria" class="sidebar-select">
+              <option value="default">Predeterminado</option>
+              <option value="precio-asc">Precio: menor a mayor</option>
+              <option value="precio-desc">Precio: mayor a menor</option>
+            </select>
+          </div>
+        </div>
 
-        function resolverImagen(img) {
-      if (!img || String(img).trim() === "") return "/MegaSantiagoFront/Model/imagenes/sin-imagen.png";
-      const limpia = String(img).trim();
-      if (limpia.startsWith("http://") || limpia.startsWith("https://")) return limpia;
-      return "/MegaSantiagoFront/Model/" + limpia;
-    }
+        <div id="gridPapeleria" class="product-grid"></div>
+      </section>
 
-    function formatearDinero(valor) {
-            return "$" + Number(valor).toFixed(2);
-        }
+    </div>
+  </main>
 
-        function detectarTipoDesdeNombre(nombre) {
-            const n = (nombre || "").toLowerCase();
-            if (n.includes("cartulina")) return "cartulina";
-            if (n.includes("corrugado")) return "corrugado";
-            if (n.includes("papel"))     return "papel";
-            return "otros";
-        }
+  <!-- ===== FOOTER ===== -->
+  <div id="footer"></div>
+  <div id="scripts"></div>
+  <!-- ================== -->
 
-        function crearTarjetaPapeleria(prod) {
-            const precioBase    = parseFloat(prod.precio);
-            const precioOferta  = prod.precio_oferta ? parseFloat(prod.precio_oferta) : null;
-            const precioMostrar = (precioOferta && precioOferta > 0) ? precioOferta : precioBase;
+  <!-- ✅ 1) Layout loader -->
+  <script src="/View/assets/js/layout-loader.js"></script>
 
-            const rutaImagen = resolverImagen(prod.imagen);
+  <!-- ✅ 2) Lógica de esta página -->
+  <script src="/View/assets/js/pages/papeleria.js"></script>
 
-            const tipo = detectarTipoDesdeNombre(prod.nombre);
+  <!-- ✅ 3) Ejecutar luego de cargar header/nav/footer -->
+  <script>
+    loadLayout().then(() => {
+      window.initPapeleriaPage?.();
 
-            return `
-                <article class="product-card"
-                         data-id="${prod.id}"
-                         data-precio="${precioMostrar}"
-                         data-tipo="${tipo}">
-                    <div class="product-image">
-                        <img src="${rutaImagen}" alt="${prod.nombre}">
-                    </div>
-                    <h3>${prod.nombre}</h3>
-                    <p class="product-price">${formatearDinero(precioMostrar)} + IVA</p>
-                    <button class="btn-add-grid" type="button">Agregar al carrito</button>
-                </article>
-            `;
-        }
-
-        async function cargarProductosPapeleria() {
-            const grid  = document.getElementById("gridPapeleria");
-            const texto = document.getElementById("textoResultadosPapeleria");
-
-            grid.innerHTML = "<p>Cargando productos...</p>";
-
-            try {
-                const resp = await fetch(`${API_URL}?accion=listarPorCategoria&categoria=papeleria`);
-                const data = await resp.json();
-
-                if (!Array.isArray(data) || data.length === 0) {
-                    grid.innerHTML = "<p>No hay productos disponibles en Papelería.</p>";
-                    texto.textContent = "Mostrando 0 resultados";
-                    return;
-                }
-
-                grid.innerHTML = data.map(crearTarjetaPapeleria).join("");
-                texto.textContent = `Mostrando ${data.length} resultado${data.length > 1 ? "s" : ""}`;
-
-                inicializarOrdenPapeleria();
-                inicializarFiltrosPapeleria();
-                inicializarCarritoPapeleria();
-
-            } catch (err) {
-                console.error(err);
-                grid.innerHTML = "<p>Error al cargar productos.</p>";
-                texto.textContent = "Mostrando 0 resultados";
-            }
-        }
-
-        function inicializarOrdenPapeleria() {
-            const selectOrden = document.getElementById("ordenPapeleria");
-            const grid = document.getElementById("gridPapeleria");
-
-            selectOrden.addEventListener("change", () => {
-                const opcion = selectOrden.value;
-                const cards = Array.from(grid.querySelectorAll(".product-card"));
-                if (opcion === "default") return;
-
-                cards.sort((a, b) => {
-                    const pa = parseFloat(a.dataset.precio);
-                    const pb = parseFloat(b.dataset.precio);
-                    return opcion === "precio-asc" ? pa - pb : pb - pa;
-                });
-
-                cards.forEach(c => grid.appendChild(c));
-            });
-        }
-
-        function inicializarFiltrosPapeleria() {
-            const grid        = document.getElementById("gridPapeleria");
-            const selectTipo  = document.querySelector(".sidebar-select-tipo");
-            const rangePrecio = document.querySelector(".sidebar-range");
-            const infoPrecio  = document.querySelector(".sidebar-range-info");
-            const btnFiltrar  = document.querySelector(".btn-sidebar");
-
-            infoPrecio.textContent = "Precio máx: $" + rangePrecio.value;
-
-            rangePrecio.addEventListener("input", () => {
-                infoPrecio.textContent = "Precio máx: $" + rangePrecio.value;
-            });
-
-            btnFiltrar.addEventListener("click", () => {
-                const maxPrecio = parseFloat(rangePrecio.value);
-                const tipoSel   = selectTipo.value;
-
-                Array.from(grid.querySelectorAll(".product-card")).forEach(card => {
-                    const precio = parseFloat(card.dataset.precio);
-                    const tipo   = card.dataset.tipo;
-                    card.style.display =
-                        (tipoSel === "todos" || tipo === tipoSel) && precio <= maxPrecio
-                            ? ""
-                            : "none";
-                });
-            });
-        }
-
-        function inicializarCarritoPapeleria() {
-            const grid = document.getElementById("gridPapeleria");
-
-            grid.addEventListener("click", (e) => {
-                if (!e.target.classList.contains("btn-add-grid")) return;
-
-                const card = e.target.closest(".product-card");
-                const id    = card.dataset.id;
-                const nombre= card.querySelector("h3").textContent;
-                const precio= parseFloat(card.dataset.precio);
-
-                let carrito = JSON.parse(localStorage.getItem("carritoMega") || "[]");
-                const existe = carrito.find(p => p.id === id);
-                if (existe) existe.cantidad++;
-                else carrito.push({ id, nombre, precio, cantidad: 1 });
-
-                localStorage.setItem("carritoMega", JSON.stringify(carrito));
-                alert("Producto agregado al carrito");
-            });
-        }
-
-        document.addEventListener("DOMContentLoaded", cargarProductosPapeleria);
-
-        /* ===== ALIAS BUSCADOR (OPCIÓN 1) ===== */
-        function realizarBusquedaGlobal() {
-            const input = document.getElementById("buscador");
-            if (!input) return;
-            const q = input.value.trim();
-            if (!q) return;
-            window.location.href = "busqueda.html?q=" + encodeURIComponent(q);
-        }
-    </script>
-
-    <!-- ===== LAYOUT LOADER ===== -->
-    <script src="../js/layout-loader.js"></script>
-    <script>
-        loadLayout();
-    </script>
+      // (Opcional) sesión si la usas
+      const s = document.createElement("script");
+      s.src = "/View/assets/js/sesion-usuario.js";
+      document.body.appendChild(s);
+    });
+  </script>
 
 </body>
 </html>

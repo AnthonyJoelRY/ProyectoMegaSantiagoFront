@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MegaSantiago | Bazar</title>
 
-  <!-- ✅ FIX: espacio -> %20 -->
-  <link rel="stylesheet" href="/MegaSantiagoFront/Model/csss%20estilos/estilos.css">
+  <!-- ✅ InfinityFree: rutas absolutas -->
+  <link rel="stylesheet" href="/View/assets/css/estilos.css">
+  <link rel="stylesheet" href="/View/assets/css/overrides.css">
 </head>
+
 <body>
 
   <!-- ===== LAYOUT ===== -->
@@ -16,46 +18,54 @@
   <!-- ================== -->
 
   <!-- HERO -->
-  <section class="category-hero">
+  <section class="category-hero hero-bazar">
     <div class="category-hero-inner">
       <h1>Bazar</h1>
-      <p>Decoración, fiestas y miles de detalles para alegrar cada momento.</p>
+      <p>Decoración, regalos, organizadores y más.</p>
     </div>
   </section>
 
-  <!-- CONTENIDO -->
+  <!-- LAYOUT CATÁLOGO -->
   <main class="category-page">
     <div class="category-layout">
 
+      <!-- SIDEBAR -->
       <aside class="category-sidebar">
         <h3>Categorías</h3>
         <ul class="category-list">
-          <li class="active"><a href="/MegaSantiagoFront/View/pages/bazar.html">Bazar</a></li>
-          <li><a href="/MegaSantiagoFront/View/pages/papeleria.html">Papelería</a></li>
-          <li><a href="/MegaSantiagoFront/View/pages/productos-arte.html">Productos de arte</a></li>
-          <li><a href="/MegaSantiagoFront/View/pages/suministros-oficina.html">Suministros de oficina</a></li>
-          <li><a href="/MegaSantiagoFront/View/pages/utiles-escolares.html">Útiles escolares</a></li>
+          <li class="active"><a href="bazar.html">Bazar</a></li>
+          <li><a href="papeleria.html">Papelería</a></li>
+          <li><a href="productos-arte.html">Productos de arte</a></li>
+          <li><a href="suministros-oficina.html">Suministros de oficina</a></li>
+          <li><a href="utiles-escolares.html">Útiles escolares</a></li>
         </ul>
 
         <div class="sidebar-block">
           <h4>Filtrar por</h4>
-          <label class="sidebar-label">Tipo</label>
-          <select class="sidebar-select sidebar-select-tipo">
-            <option value="todos">Cualquier tipo</option>
+          <label class="sidebar-label">Sección</label>
+          <select class="sidebar-select sidebar-select-seccion">
+            <option value="todos">Todas</option>
             <option value="globos">Globos</option>
             <option value="decoracion">Decoración</option>
-            <option value="regalos">Regalos / varios</option>
+            <option value="organizadores">Organizadores</option>
+            <option value="velas">Velas</option>
+            <option value="regalos">Regalos</option>
+            <option value="detalles">Detalles</option>
           </select>
+          <small class="text-muted" style="display:block;margin-top:6px;">
+            Tip: si llegas desde el menú (ej. <b>BAZAR ▾</b>), se filtra por el # de la URL.
+          </small>
         </div>
 
         <div class="sidebar-block">
           <h4>Filtrar por precio</h4>
-          <input type="range" min="0" max="100" value="40" class="sidebar-range">
-          <div class="sidebar-range-info">Precio máx: $40</div>
+          <input type="range" min="0" max="50" value="25" class="sidebar-range">
+          <div class="sidebar-range-info">Precio máx: $25</div>
           <button class="btn-sidebar">FILTRAR</button>
         </div>
       </aside>
 
+      <!-- CONTENIDO -->
       <section class="category-main">
         <div class="category-main-header">
           <p id="textoResultadosBazar">Mostrando 0 resultados</p>
@@ -81,194 +91,18 @@
   <div id="scripts"></div>
   <!-- ================== -->
 
-  <script>
-    const API_URL = "/MegaSantiagoFront/Controller/productosController.php";
+  <!-- ✅ 1) Layout loader -->
+  <script src="/View/assets/js/layout-loader.js"></script>
 
-    function resolverImagen(img) {
-      if (!img || String(img).trim() === "") return "/MegaSantiagoFront/Model/imagenes/sin-imagen.png";
-      const limpia = String(img).trim();
-      if (limpia.startsWith("http://") || limpia.startsWith("https://")) return limpia;
-      return "/MegaSantiagoFront/Model/" + limpia;
-    }
+  <!-- ✅ 2) Lógica de esta página -->
+  <script src="/View/assets/js/pages/bazar.js"></script>
 
-    function formatearDinero(valor) { return "$" + Number(valor).toFixed(2); }
-
-    /* ========= ✅ IGUAL QUE INDEX: BÚSQUEDA GLOBAL ========= */
-    function getBasePath() {
-      // /MegaSantiagoFront/View/pages/bazar.html -> /MegaSantiagoFront
-      const parts = window.location.pathname.split("/").filter(Boolean);
-      return parts.length ? "/" + parts[0] : "";
-    }
-
-    // ✅ El header usa onclick="realizarBusquedaGlobal()"
-    function realizarBusquedaGlobal() {
-      const input = document.getElementById("buscador");
-      if (!input) return;
-
-      const valor = input.value.trim();
-      if (!valor) return;
-
-      const base = getBasePath();
-      window.location.href = `${base}/View/pages/busqueda.html?q=${encodeURIComponent(valor)}`;
-    }
-
-    function detectarTipoBazar(nombre) {
-      const n = (nombre || "").toLowerCase();
-      if (n.includes("globo")) return "globos";
-      if (n.includes("astro") || n.includes("decor") || n.includes("fiesta")) return "decoracion";
-      if (n.includes("regalo") || n.includes("detalle")) return "regalos";
-      return "regalos";
-    }
-
-    function crearTarjetaBazar(prod) {
-      const precioBase = parseFloat(prod.precio);
-      const precioOferta = prod.precio_oferta ? parseFloat(prod.precio_oferta) : null;
-      const precioMostrar = (precioOferta && precioOferta > 0) ? precioOferta : precioBase;
-
-      const rutaImagen = resolverImagen(prod.imagen);
-
-      const tipo = detectarTipoBazar(prod.nombre);
-
-      return `
-        <article class="product-card" data-id="${prod.id}" data-precio="${precioMostrar}" data-tipo="${tipo}">
-          <div class="product-image">
-            <img src="${rutaImagen}" alt="${prod.nombre}">
-          </div>
-          <h3>${prod.nombre}</h3>
-          <p class="product-price">${formatearDinero(precioMostrar)} + IVA</p>
-          <button class="btn-add-grid" type="button">Agregar al carrito</button>
-        </article>
-      `;
-    }
-
-    async function cargarProductosBazar() {
-      const grid = document.getElementById("gridBazar");
-      const texto = document.getElementById("textoResultadosBazar");
-      grid.innerHTML = "<p>Cargando productos...</p>";
-
-      try {
-        const resp = await fetch(`${API_URL}?accion=listarPorCategoria&categoria=bazar`);
-        const data = await resp.json();
-
-        if (data.error) {
-          grid.innerHTML = `<p>Error: ${data.error}</p>`;
-          texto.textContent = "Mostrando 0 resultados";
-          return;
-        }
-
-        if (!Array.isArray(data) || data.length === 0) {
-          grid.innerHTML = "<p>No hay productos de bazar.</p>";
-          texto.textContent = "Mostrando 0 resultados";
-          return;
-        }
-
-        grid.innerHTML = data.map(crearTarjetaBazar).join("");
-        texto.textContent = `Mostrando ${data.length} resultado${data.length > 1 ? "s" : ""}`;
-
-        inicializarOrdenBazar();
-        inicializarFiltrosBazar();
-        inicializarCarritoBazar();
-
-      } catch (err) {
-        console.error(err);
-        grid.innerHTML = "<p>Error al cargar productos.</p>";
-        texto.textContent = "Mostrando 0 resultados";
-      }
-    }
-
-    function inicializarOrdenBazar() {
-      const selectOrden = document.getElementById("ordenBazar");
-      const grid = document.getElementById("gridBazar");
-
-      selectOrden.addEventListener("change", () => {
-        const opcion = selectOrden.value;
-        const cards = Array.from(grid.querySelectorAll(".product-card"));
-        if (opcion === "default") return;
-
-        cards.sort((a, b) => {
-          const pa = parseFloat(a.dataset.precio);
-          const pb = parseFloat(b.dataset.precio);
-          return opcion === "precio-asc" ? pa - pb : pb - pa;
-        });
-
-        cards.forEach(c => grid.appendChild(c));
-      });
-    }
-
-    function inicializarFiltrosBazar() {
-      const grid = document.getElementById("gridBazar");
-      const selectTipo = document.querySelector(".sidebar-select-tipo");
-      const rangePrecio = document.querySelector(".sidebar-range");
-      const infoPrecio = document.querySelector(".sidebar-range-info");
-      const btnFiltrar = document.querySelector(".btn-sidebar");
-
-      infoPrecio.textContent = "Precio máx: $" + rangePrecio.value;
-      rangePrecio.addEventListener("input", () => {
-        infoPrecio.textContent = "Precio máx: $" + rangePrecio.value;
-      });
-
-      btnFiltrar.addEventListener("click", () => {
-        const maxPrecio = parseFloat(rangePrecio.value);
-        const tipoSel = selectTipo.value;
-        const cards = Array.from(grid.querySelectorAll(".product-card"));
-
-        cards.forEach(card => {
-          const precio = parseFloat(card.dataset.precio);
-          const tipoCard = card.dataset.tipo;
-
-          const okTipo = (tipoSel === "todos" || tipoCard === tipoSel);
-          const okPrecio = precio <= maxPrecio;
-          card.style.display = (okTipo && okPrecio) ? "" : "none";
-        });
-      });
-    }
-
-    function inicializarCarritoBazar() {
-      const grid = document.getElementById("gridBazar");
-
-      function obtenerCarrito() { return JSON.parse(localStorage.getItem("carritoMega") || "[]"); }
-      function guardarCarrito(c) { localStorage.setItem("carritoMega", JSON.stringify(c)); }
-
-      grid.addEventListener("click", (e) => {
-        if (!e.target.classList.contains("btn-add-grid")) return;
-
-        const card = e.target.closest(".product-card");
-        const id = card.dataset.id;
-        const nombre = card.querySelector("h3").textContent;
-        const precio = parseFloat(card.dataset.precio);
-
-        let carrito = obtenerCarrito();
-        const existe = carrito.find(p => p.id === id);
-
-        if (existe) existe.cantidad++;
-        else carrito.push({ id, nombre, precio, cantidad: 1 });
-
-        guardarCarrito(carrito);
-        alert("Producto agregado al carrito");
-      });
-    }
-
-    function initBazarPage() {
-      // ✅ igual que index: conectar Enter cuando el input exista (después del layout)
-      const buscador = document.getElementById("buscador");
-      if (buscador) {
-        buscador.addEventListener("keyup", (e) => {
-          if (e.key === "Enter") realizarBusquedaGlobal();
-        });
-      }
-
-      cargarProductosBazar();
-    }
-  </script>
-
-  <script src="/MegaSantiagoFront/View/js/layout-loader.js"></script>
+  <!-- ✅ 3) Ejecutar luego de cargar header/nav/footer -->
   <script>
     loadLayout().then(() => {
-      initBazarPage();
-
-      // ✅ igual que index: cargar sesión después de que exista #header-usuario
+      window.initBazarPage?.();
       const s = document.createElement("script");
-      s.src = "/MegaSantiagoFront/Model/js/sesion-usuario.js";
+      s.src = "/View/assets/js/sesion-usuario.js";
       document.body.appendChild(s);
     });
   </script>

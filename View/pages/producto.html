@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Producto | MegaSantiago</title>
+
+  <!-- ✅ InfinityFree: rutas absolutas -->
+  <link rel="stylesheet" href="/View/assets/css/estilos.css" />
+  <link rel="stylesheet" href="/View/assets/css/overrides.css" />
+
+  <style>
+    .product-page { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    .product-wrap { display: grid; grid-template-columns: 420px 1fr; gap: 28px; }
+    @media (max-width: 900px) { .product-wrap { grid-template-columns: 1fr; } }
+
+    .gallery { background: #fff; border-radius: 14px; padding: 18px; box-shadow: 0 6px 16px rgba(0,0,0,.06); }
+    .gallery-main { width: 100%; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; }
+    .gallery-main img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .thumbs { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .thumbs button { border: 1px solid #e5e5e5; background: #fff; border-radius: 10px; padding: 6px; cursor: pointer; }
+    .thumbs img { width: 64px; height: 64px; object-fit: cover; border-radius: 8px; }
+
+    .pinfo { background: #fff; border-radius: 14px; padding: 18px; box-shadow: 0 6px 16px rgba(0,0,0,.06); }
+    .pinfo h1 { margin: 0 0 8px; font-size: 28px; }
+    .sku { opacity: .75; font-size: 14px; margin-bottom: 8px; }
+    .price { font-size: 28px; font-weight: 800; margin: 10px 0; }
+    .price small { font-size: 14px; font-weight: 600; opacity: .7; }
+    .desc { margin-top: 12px; line-height: 1.55; }
+    .row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 16px; align-items: center; }
+
+    .qty { display: inline-flex; border: 1px solid #e5e5e5; border-radius: 10px; overflow: hidden; }
+    .qty button { width: 44px; height: 40px; border: none; background: #f3f3f3; cursor: pointer; font-size: 18px; }
+    .qty input { width: 56px; height: 40px; border: none; text-align: center; outline: none; }
+
+    .btn-primary2 { height: 40px; padding: 0 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; }
+    .btn-primary2:disabled { opacity: .6; cursor: not-allowed; }
+
+    .related { margin-top: 26px; }
+    .related h2 { margin: 0 0 12px; }
+    .grid-rel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    @media (max-width: 1100px) { .grid-rel { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 800px) { .grid-rel { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .grid-rel { grid-template-columns: 1fr; } }
+
+    .msg { margin-top: 10px; font-weight: 600; }
+    .msg.ok { color: #157347; }
+    .msg.err { color: #b02a37; }
+  </style>
+</head>
+
+<body>
+  <!-- ===== LAYOUT ===== -->
+  <div id="header"></div>
+  <div id="nav"></div>
+  <!-- ================== -->
+
+  <main class="product-page">
+    <div id="estado"></div>
+
+    <section class="product-wrap" id="productoWrap" style="display:none;">
+      <div class="gallery">
+        <div class="gallery-main"><img id="imgPrincipal" alt="Producto" /></div>
+        <div class="thumbs" id="thumbs"></div>
+      </div>
+
+      <div class="pinfo">
+        <h1 id="pNombre">Producto</h1>
+        <div class="sku" id="pSku"></div>
+        <div class="price" id="pPrecio"></div>
+
+        <div class="row" id="rowColor" style="display:none;">
+          <label for="selColor" style="font-weight:700;">Color</label>
+          <select id="selColor" style="height:40px; border-radius:10px; border:1px solid #e5e5e5; padding:0 10px;"></select>
+        </div>
+
+        <div class="row">
+          <div class="qty">
+            <button id="btnMenos" type="button">-</button>
+            <input id="inpQty" type="number" min="1" value="1" />
+            <button id="btnMas" type="button">+</button>
+          </div>
+
+          <button class="btn-primary2" id="btnAdd" type="button">
+            AÑADIR AL CARRITO
+          </button>
+        </div>
+
+        <div class="msg" id="msg"></div>
+
+        <div class="desc">
+          <p id="pDescCorta"></p>
+          <div id="pDescLarga"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="related" id="relWrap" style="display:none;">
+      <h2>Productos relacionados</h2>
+      <div class="grid-rel" id="gridRel"></div>
+    </section>
+  </main>
+
+  <!-- ✅ Layout loader -->
+  <script src="/View/assets/js/layout-loader.js"></script>
+
+  <!-- ✅ Búsqueda global del header -->
+  <script src="/View/assets/js/busqueda-global.js"></script>
+
+  <!-- ✅ UI contador del carrito (si tu header lo usa) -->
+  <script src="/View/assets/js/carrito-ui.js"></script>
+
+  <!-- ✅ Lógica del producto -->
+  <script src="/View/assets/js/pages/producto.js"></script>
+
+  <script>
+    loadLayout().then(() => {
+      window.initProductoPage?.();
+
+      // (Opcional) sesión usuario
+      const s = document.createElement("script");
+      s.src = "/View/assets/js/sesion-usuario.js";
+      document.body.appendChild(s);
+    });
+  </script>
+</body>
+</html>

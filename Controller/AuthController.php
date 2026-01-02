@@ -1,19 +1,19 @@
 <?php
 // Controller/AuthController.php
 
-header("Content-Type: application/json; charset=utf-8");
+require_once __DIR__ . "/_helpers/Bootstrap.php";
 
 // ===============================
 // DEPENDENCIAS
 // ===============================
-require_once __DIR__ . "/../Model/db.php";
-require_once __DIR__ . "/../Model/Service/AuthService.php";
+require_once __DIR__ . "/../Model/DB/db.php";
+require_once __DIR__ . "/../Model/Factory/AuthServiceFactory.php";
 
 // ===============================
 // INICIALIZACIÓN
 // ===============================
 $pdo = obtenerConexion();
-$service = new AuthService($pdo);
+$service = (new AuthServiceFactory())->create($pdo);
 
 $accion = $_GET["accion"] ?? "";
 
@@ -25,12 +25,6 @@ $data = is_array($data) ? $data : [];
 // ===============================
 // HELPER DE RESPUESTA
 // ===============================
-function responder(array $payload, int $code = 200): void {
-    http_response_code($code);
-    echo json_encode($payload, JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
 // ===============================
 // ROUTES (SIN SWITCH)
 // ===============================
@@ -48,10 +42,10 @@ $routes = [
             if (str_contains($res["error"], "ya está registrado")) {
                 $code = 409;
             }
-            responder($res, $code);
+            api_responder($res, $code);
         }
 
-        responder($res, 200);
+        api_responder($res, 200);
     },
 
     // -------- REGISTRO EMPRESA --------
@@ -69,10 +63,10 @@ $routes = [
                 $code = 500;
             }
 
-            responder($res, $code);
+            api_responder($res, $code);
         }
 
-        responder($res, 200);
+        api_responder($res, 200);
     },
 
     // -------- LOGIN --------
@@ -89,10 +83,10 @@ $routes = [
                 $code = 401;
             }
 
-            responder($res, $code);
+            api_responder($res, $code);
         }
 
-        responder($res, 200);
+        api_responder($res, 200);
     },
 
 ];
@@ -101,7 +95,7 @@ $routes = [
 // EJECUCIÓN
 // ===============================
 if (!isset($routes[$accion])) {
-    responder(["error" => "Acción no válida"], 400);
+    api_responder(["error" => "Acción no válida"], 400);
 }
 
 $routes[$accion]();
