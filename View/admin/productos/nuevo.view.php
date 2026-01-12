@@ -61,6 +61,35 @@
                             <input type="number" step="0.01" name="precio_oferta" class="form-control">
                         </div>
                     </div>
+                    
+                    
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Stock inicial</label>
+        <input
+            type="number"
+            name="stock"
+            class="form-control"
+            min="1"
+            value="1"
+            required
+        >
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Stock mínimo (Alerta)</label>
+        <input
+            type="number"
+            name="stock_minimo"
+            class="form-control"
+            min="1"
+            value="1"
+            required
+        >
+    </div>
+</div>
+
+
 
                     <div class="mb-3">
                         <label class="form-label">SKU</label>
@@ -86,7 +115,11 @@
                         <label class="form-check-label">Aplica IVA</label>
                     </div>
 
-                    <button class="btn btn-primary fw-semibold">Guardar producto</button>
+                    <button type="submit" id="btnGuardar" class="btn btn-primary">
+    Guardar producto
+</button>
+
+
                 </form>
 
             </main>
@@ -121,6 +154,23 @@
         const estado = document.getElementById("estadoUpload");
         const imagenUrl = document.getElementById("imagenUrl");
         const form = document.querySelector("form");
+        const btnGuardar = document.getElementById("btnGuardar");
+
+form.addEventListener("submit", (e) => {
+  // Evitar enviar si la imagen no está lista
+  if (!imagenUrl.value) {
+    e.preventDefault();
+    alert("Primero selecciona una imagen y espera a que se suba a Firebase.");
+    return;
+  }
+
+  // Bloquear doble envío
+  if (btnGuardar) {
+    btnGuardar.disabled = true;
+    btnGuardar.innerText = "Guardando...";
+  }
+});
+
 
         function nombreSeguro(nombre) {
             return nombre

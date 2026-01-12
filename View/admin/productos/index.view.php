@@ -95,6 +95,21 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 <?php endif; ?>
+                
+                <?php if (isset($_GET["ok"])): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        ✅ Producto creado correctamente.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+
+<?php if (isset($_GET["edit"])): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        ✏️ Cambios guardados correctamente.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+
 
 
 
@@ -154,15 +169,18 @@ if (preg_match('/^https?:\/\//', $rutaImagen)) {
 
                                             <td><?= $p["stock"] ?></td>
 
-                                            <td>
-                                                <?php if ($p["precio_oferta"] ? $p["precio_oferta"] . "%" : "—"): ?>
-                                                    <span class="badge bg-warning text-dark">
-                                                        $<?= number_format($p["precio_oferta"], 2) ?>
-                                                    </span>
-                                                <?php else: ?>
-                                                    —
-                                                <?php endif; ?>
-                                            </td>
+                                            
+<td>
+    <?php if (!empty($p["precio_oferta"])): ?>
+        <span class="badge bg-warning text-dark">
+            <?= (int)$p["precio_oferta"] ?>% OFF
+        </span>
+    <?php else: ?>
+        —
+    <?php endif; ?>
+</td>
+
+
 
 
                                             <td>

@@ -21,7 +21,12 @@
   <header class="main-header">
     <div class="header-left">
       <a href="/index.html">
-        <img src="/Model/imagenes/Logo_MegaSantiago.png" alt="MegaSantiago" class="logo-mega">
+        <!-- ✅ Logo cargado desde Firebase (igual que el resto del sitio) -->
+        <img
+          src="https://firebasestorage.googleapis.com/v0/b/megasantiago.firebasestorage.app/o/productos%2FLogo_MegaSantiago.png?alt=media&token=cc08f810-10ba-4fcd-b9f2-bb5f7bedf9ad"
+          alt="MegaSantiago"
+          class="logo-mega"
+        >
       </a>
     </div>
 
@@ -30,7 +35,9 @@
     </div>
 
     <div class="header-right">
-      <a href="/View/pages/login.html" class="link-header">← Volver a Acceder / Registrarse</a>
+      <a href="/View/pages/login.html" class="link-header">
+        ← Volver a Acceder / Registrarse
+      </a>
     </div>
   </header>
 
@@ -41,19 +48,29 @@
         <h2>Crea tu cuenta de empresa</h2>
 
         <form id="formRegistroEmpresa" class="auth-form">
-          <label for="empresa-nombre">Nombre legal de la empresa <span class="req">*</span></label>
+          <label for="empresa-nombre">
+            Nombre legal de la empresa <span class="req">*</span>
+          </label>
           <input type="text" id="empresa-nombre" required>
 
-          <label for="empresa-ruc">RUC / Identificación fiscal <span class="req">*</span></label>
+          <label for="empresa-ruc">
+            RUC / Identificación fiscal <span class="req">*</span>
+          </label>
           <input type="text" id="empresa-ruc" required>
 
-          <label for="empresa-correo">Correo electrónico de la empresa <span class="req">*</span></label>
+          <label for="empresa-correo">
+            Correo electrónico de la empresa <span class="req">*</span>
+          </label>
           <input type="email" id="empresa-correo" required>
 
-          <label for="empresa-telefono">Teléfono de contacto <span class="req">*</span></label>
+          <label for="empresa-telefono">
+            Teléfono de contacto <span class="req">*</span>
+          </label>
           <input type="tel" id="empresa-telefono" required>
 
-          <label for="empresa-direccion">Dirección fiscal <span class="req">*</span></label>
+          <label for="empresa-direccion">
+            Dirección fiscal <span class="req">*</span>
+          </label>
           <input type="text" id="empresa-direccion" required>
 
           <label for="empresa-ciudad">Ciudad</label>
@@ -71,10 +88,16 @@
             <option value="otro">Otro</option>
           </select>
 
-          <label for="empresa-clave">Contraseña de la cuenta <span class="req">*</span></label>
+          <label for="empresa-clave">
+            Contraseña de la cuenta <span class="req">*</span>
+          </label>
           <div class="auth-password-wrapper">
             <input type="password" id="empresa-clave" required>
-            <button type="button" class="btn-eye" data-target="empresa-clave">👁</button>
+            <button
+              type="button"
+              class="btn-eye"
+              data-target="empresa-clave"
+            >👁</button>
           </div>
 
           <button type="submit" class="btn-auth-primary">
@@ -83,17 +106,20 @@
         </form>
 
         <p class="auth-note">
-          Al crear una cuenta de empresa aceptas los términos y condiciones de MegaSantiago.
+          Al crear una cuenta de empresa aceptas los términos y condiciones
+          de MegaSantiago.
         </p>
       </div>
     </section>
   </main>
 
+  <!-- FOOTER -->
   <footer class="footer">
     <p>MegaSantiago © 2025 - Todos los derechos reservados</p>
   </footer>
 
-  <!-- ✅ Lógica separada -->
-  <script src="/View/assets/js/pages/registro-empresa.js"></script>
+  <!-- ✅ JS de esta página -->
+  <script src="../assets/js/pages/registro-empresa.js"></script>
+
 </body>
 </html>

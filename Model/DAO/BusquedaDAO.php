@@ -15,7 +15,7 @@ class BusquedaDAO
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ":termino"    => $termino,
-            ":id_usuario" => $idUsuario ?: null,
+            ":id_usuario" => $idUsuario, // puede ser NULL
             ":resultados" => $resultados
         ]);
     }

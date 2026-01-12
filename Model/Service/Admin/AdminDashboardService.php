@@ -10,18 +10,22 @@ class AdminDashboardService {
         $this->dao = new AdminDashboardDAO($pdo);
     }
 
-    public function obtenerResumen(): array {
-        return [
-            "totalProductos"   => $this->dao->countProductos(),
-            "totalUsuarios"    => $this->dao->countUsuarios(),
-            "productosOferta"  => $this->dao->countProductosOferta(),
-            "productosActivos" => $this->dao->countProductosActivos(),
-            "sinStock"         => $this->dao->countInventarioSinStock(),
-            "bajoStock"        => $this->dao->countInventarioBajoStock(),
-            "totalAdmins"      => $this->dao->countAdmins(),
-            "totalClientes"    => $this->dao->countClientes(),
-            "ultimoProducto"   => $this->dao->ultimoProductoNombre(),
-            "ultimoUsuario"    => $this->dao->ultimoUsuarioEmail(),
-        ];
-    }
+public function obtenerResumen(): array {
+    return [
+        "totalProductos"   => $this->dao->countProductos(),
+        "totalUsuarios"    => $this->dao->countUsuarios(),
+        "productosOferta"  => $this->dao->countProductosOferta(),
+
+        "productosActivos" => $this->dao->countProductosActivos(),
+        "sinStock"         => $this->dao->countInventarioSinStock(),
+        "stockBajo"        => $this->dao->countInventarioBajoStock(), // ✅ ESTA ES LA CLAVE
+
+        "admins"           => $this->dao->countAdmins(),
+        "clientes"         => $this->dao->countClientes(),
+
+        "ultimoProducto"   => $this->dao->ultimoProductoNombre(),
+        "ultimoUsuario"    => $this->dao->ultimoUsuarioEmail(),
+    ];
+}
+
 }

@@ -8,6 +8,9 @@
     <!-- ✅ CSS (con %20 por el espacio en la carpeta) -->
     <link rel="stylesheet" href="/View/assets/css/estilos.css" />
   <link rel="stylesheet" href="/View/assets/css/overrides.css">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
   </head>
   <body>
     <!-- ===== LAYOUT ===== -->
@@ -31,15 +34,16 @@
       <div id="gridMasVendidos" class="grid-categorias grid-best-sellers"></div>
     </section>
 
-    <section class="seccion">
-      <h2 class="titulo-seccion">Ofertas MegaSantiago</h2>
-      <div id="gridOfertas" class="carrusel-productos"></div>
-    </section>
 
-    <section id="promociones" class="seccion">
-      <h2 class="titulo-seccion">Promociones especiales</h2>
-      <div id="gridPromos" class="carrusel-productos"></div>
-    </section>
+
+<section id="promociones" class="seccion">
+  <div class="container py-2">
+    <h2 class="titulo-seccion mb-3">Ofertas MegaSantiago</h2>
+    <div id="gridPromos" class="row g-4 carrusel-productos"></div>
+  </div>
+</section>
+
+
 
     <!-- ===== FOOTER ===== -->
     <div id="footer"></div>
@@ -158,44 +162,70 @@ try { window.dispatchEvent(new Event("carrito_actualizado")); } catch(e) {}
         `;
       }
 
-      function crearCardOferta(prod) {
-        const precioBase = parseFloat(prod.precio);
-        const precioOferta = prod.precio_oferta ? parseFloat(prod.precio_oferta) : null;
-        const precioMostrado = precioOferta && precioOferta > 0 ? precioOferta : precioBase;
+function crearCardOferta(prod) {
+  const precioBase = parseFloat(prod.precio);
+  const precioOferta = prod.precio_oferta ? parseFloat(prod.precio_oferta) : null;
 
-        let textoDescuento = "";
-        if (precioOferta && precioOferta > 0 && precioOferta < precioBase) {
-          const porc = Math.round((1 - precioOferta / precioBase) * 100);
-          textoDescuento = `-${porc}%`;
-        }
+  // Si no hay oferta, no mostramos el producto en esta sección
+  if (!precioOferta || !(precioOferta > 0) || !(precioOferta < precioBase)) return "";
 
-        const rutaImagen = resolverImagen(prod.imagen);
+  const descuento = Math.round((1 - precioOferta / precioBase) * 100);
+  const ahorro = (precioBase - precioOferta).toFixed(2);
+  const rutaImagen = resolverImagen(prod.imagen);
 
-        return `
-          <article class="card-producto"
-                   data-id="${prod.id}"
-                   data-nombre="${prod.nombre}"
-                   data-precio="${precioMostrado}"
-                   style="cursor:pointer;">
-              ${textoDescuento ? `<span class="descuento">${textoDescuento}</span>` : ""}
-              <div class="img-producto">
-                  <img src="${rutaImagen}" alt="${prod.nombre}">
-              </div>
-              <p class="nombre-producto">${prod.nombre}</p>
-              ${
-                precioOferta && precioOferta > 0 && precioOferta < precioBase
-                  ? `
-                      <p class="precio-anterior">${formatearDinero(precioBase)}</p>
-                      <p class="precio-actual">${formatearDinero(precioMostrado)}</p>
-                    `
-                  : `
-                      <p class="precio-actual">${formatearDinero(precioMostrado)}</p>
-                    `
-              }
-              <button class="btn-add">+</button>
-          </article>
-        `;
-      }
+  return `
+    <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+      <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative"
+           data-id="${prod.id}"
+           data-nombre="${prod.nombre}"
+           data-precio="${precioOferta}"
+           style="cursor:pointer;">
+
+        <!-- Badge descuento -->
+        <span class="badge bg-danger position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill">
+          -${descuento}%
+        </span>
+
+        <!-- Imagen -->
+        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+          <img src="${rutaImagen}" alt="${prod.nombre}"
+               class="img-fluid p-3" style="max-height: 170px; object-fit: contain;">
+        </div>
+
+        <!-- Body -->
+        <div class="card-body d-flex flex-column">
+          <h6 class="fw-semibold mb-2" style="min-height: 40px;">
+            ${prod.nombre}
+          </h6>
+
+          <div class="mb-2">
+            <span class="text-muted text-decoration-line-through me-2">
+              ${formatearDinero(precioBase)}
+            </span>
+            <span class="fs-5 fw-bold text-danger">
+              ${formatearDinero(precioOferta)}
+            </span>
+          </div>
+
+          <small class="text-success mb-3">
+            Ahorras ${formatearDinero(ahorro)}
+          </small>
+
+          <div class="mt-auto d-flex justify-content-end">
+            <button class="btn btn-warning rounded-circle fw-bold btn-add"
+                    style="width:44px;height:44px;">
+              +
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  `;
+}
+
+
+
 
       async function cargarMasVendidos() {
         const cont = document.getElementById("gridMasVendidos");
@@ -246,39 +276,41 @@ try { window.dispatchEvent(new Event("carrito_actualizado")); } catch(e) {}
       }
 
       async function cargarPromociones() {
-        const cont = document.getElementById("gridPromos");
-        if (!cont) return;
+  const cont = document.getElementById("gridPromos");
+  if (!cont) return;
 
-        try {
-          const resp = await fetch(`${API_URL}?accion=ofertas&limit=3`);
-          const data = await resp.json();
+  try {
+    const resp = await fetch(`${API_URL}?accion=ofertas&limit=8`);
+    const data = await resp.json();
 
-          if (!Array.isArray(data) || data.length === 0) {
-            cont.innerHTML = "<p>No hay promociones activas.</p>";
-            return;
-          }
+    if (!Array.isArray(data) || data.length === 0) {
+      cont.innerHTML = "<p>No hay ofertas disponibles.</p>";
+      return;
+    }
 
-          cont.innerHTML = data.map(crearCardOferta).join("");
-          wireBotonesCarrito("#gridPromos .btn-add");
-          wireIrDetalle("#gridPromos .card-producto");
-        } catch (err) {
-          console.error(err);
-          cont.innerHTML = "<p>Error al cargar promociones.</p>";
-        }
-      }
+    cont.innerHTML = data.map(crearCardOferta).join("");
+    wireBotonesCarrito("#gridPromos .btn-add");
+wireIrDetalle("#gridPromos [data-id]");
+
+  } catch (err) {
+    console.error(err);
+    cont.innerHTML = "<p>Error al cargar las ofertas.</p>";
+  }
+}
+
 
       function initIndexPage() {
-        const buscador = document.getElementById("buscador");
-        if (buscador) {
-          buscador.addEventListener("keyup", (e) => {
-            if (e.key === "Enter") realizarBusqueda();
-          });
-        }
+  const buscador = document.getElementById("buscador");
+  if (buscador) {
+    buscador.addEventListener("keyup", (e) => {
+      if (e.key === "Enter") realizarBusqueda();
+    });
+  }
 
-        cargarMasVendidos();
-        cargarOfertas();
-        cargarPromociones();
-      }
+  cargarMasVendidos();
+  cargarPromociones(); // esta será tu ÚNICA sección de ofertas
+}
+
     </script>
 
     <!-- LAYOUT -->

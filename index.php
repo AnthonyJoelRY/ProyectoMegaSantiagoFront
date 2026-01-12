@@ -53,6 +53,7 @@ $publicMap = [
     'registro'            => 'registro_empresa.html',
     'recuperar-clave'     => 'recuperar_clave.html',
     'carrito'             => 'carrito.html',
+    'mis-pedidos'         => 'mis_pedidos.html',
     'buscar'              => 'busqueda.html',
     'producto'            => 'producto.html',
     'bazar'               => 'bazar.html',
@@ -159,6 +160,7 @@ if (str_starts_with($lower, 'panel/')) {
         require_once __DIR__ . '/Controller/Admin/PedidosController.php';
         $c = new PedidosController();
         if ($action === 'ver') { $c->ver(); exit; }
+        if ($action === 'estado') { $c->estado(); exit; }
     }
 
     // Reportes
@@ -166,6 +168,34 @@ if (str_starts_with($lower, 'panel/')) {
         require_once __DIR__ . '/Controller/Admin/ReportesController.php';
         (new ReportesController())->index();
         exit;
+    }
+
+    // Sucursales
+    if ($sub === 'sucursales') {
+        require_once __DIR__ . '/Controller/Admin/SucursalesController.php';
+        (new SucursalesController())->index();
+        exit;
+    }
+    if (str_starts_with($sub, 'sucursales/')) {
+        $action = substr($sub, strlen('sucursales/'));
+        require_once __DIR__ . '/Controller/Admin/SucursalesController.php';
+        $c = new SucursalesController();
+        if ($action === 'nuevo') { $c->nuevo(); exit; }
+        if ($action === 'editar') { $c->editar(); exit; }
+        if ($action === 'acciones') { $c->acciones(); exit; }
+    }
+
+    // Inventario por sucursal
+    if ($sub === 'inventario-sucursal') {
+        require_once __DIR__ . '/Controller/Admin/InventarioSucursalController.php';
+        (new InventarioSucursalController())->index();
+        exit;
+    }
+    if (str_starts_with($sub, 'inventario-sucursal/')) {
+        $action = substr($sub, strlen('inventario-sucursal/'));
+        require_once __DIR__ . '/Controller/Admin/InventarioSucursalController.php';
+        $c = new InventarioSucursalController();
+        if ($action === 'acciones') { $c->acciones(); exit; }
     }
 
     http_response_code(404);

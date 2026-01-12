@@ -75,8 +75,13 @@
       }
 
       try {
-        // ✅ Backend actual solo registra email + clave
-        const data = await fetchJSON(`${API}?accion=registrar`, { email, clave });
+        // ✅ AHORA enviamos nombre + apellido también
+        const data = await fetchJSON(`${API}?accion=registrar`, {
+          nombre,
+          apellido,
+          email,
+          clave
+        });
 
         if (data.error) {
           alert(data.error);
@@ -94,6 +99,12 @@
         const loginClave = document.getElementById("login-clave");
         if (loginEmail) loginEmail.value = email;
         if (loginClave) loginClave.value = "";
+
+        // (Opcional) limpiar registro
+        document.getElementById("reg-nombre").value = "";
+        document.getElementById("reg-apellido").value = "";
+        document.getElementById("reg-correo").value = "";
+        document.getElementById("reg-clave").value = "";
 
         window.scrollTo({ top: 0, behavior: "smooth" });
       } catch (err) {

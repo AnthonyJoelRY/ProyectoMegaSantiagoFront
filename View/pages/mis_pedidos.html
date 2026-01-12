@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MegaSantiago | Mis pedidos</title>
+
+  <link rel="stylesheet" href="/View/assets/css/estilos.css" />
+  <link rel="stylesheet" href="/View/assets/css/overrides.css" />
+</head>
+<body>
+
+  <!-- ===== LAYOUT ===== -->
+  <div id="header"></div>
+  <div id="nav"></div>
+  <!-- ================== -->
+
+  <main class="cart-page">
+    <section class="cart-container">
+      <h2>Mis pedidos</h2>
+
+      <div id="mp-error" style="display:none; padding:12px; border-radius:12px; background:#fff3cd; color:#856404; margin-bottom:12px;"></div>
+
+      <div id="mp-lista" style="background:#fff; border-radius:12px; box-shadow:0 6px 16px rgba(0,0,0,.06); overflow:hidden;">
+        <div style="padding:14px; border-bottom:1px solid #eee; font-weight:600;">Tus pedidos</div>
+        <div id="mp-contenido" style="padding:14px;">
+          Cargando...
+        </div>
+      </div>
+
+      <div id="mp-detalle" style="display:none; margin-top:16px; background:#fff; border-radius:12px; box-shadow:0 6px 16px rgba(0,0,0,.06); overflow:hidden;">
+        <div style="padding:14px; border-bottom:1px solid #eee; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+          <div style="font-weight:700;">Detalle del pedido <span id="mp-detalle-id"></span></div>
+          <button id="mp-cerrar" class="btn-cart-secondary" style="padding:8px 12px;">Cerrar</button>
+        </div>
+        <div id="mp-detalle-body" style="padding:14px;"></div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="/View/assets/js/layout-loader.js"></script>
+  <script src="/View/assets/js/carrito-ui.js"></script>
+  <script src="/View/assets/js/pages/mis-pedidos.js"></script>
+
+  <script>
+    loadLayout().then(() => {
+      const s = document.createElement('script');
+      s.src = '/View/assets/js/sesion-usuario.js';
+      s.onload = () => window.initMisPedidosPage?.();
+      document.body.appendChild(s);
+    });
+  </script>
+
+</body>
+</html>

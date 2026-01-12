@@ -247,4 +247,33 @@ class ProductoDAO
         $stmt->execute([":id" => $idProducto]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    public function listarConPromocion(int $limit = 6): array
+{
+    $sql = "
+        SELECT
+            p.id_producto,
+            p.nombre,
+            p.precio,
+            img.url_imagen AS imagen,
+            pr.valor_descuento AS descuento
+        FROM productos p
+        INNER JOIN promocion_productos pp ON pp.id_producto = p.id_producto
+        INNER JOIN promociones pr ON pr.id_promocion = pp.id_promocion
+        LEFT JOIN producto_imagenes img
+            ON img.id_producto = p.id_producto AND img.es_principal = 1
+        WHERE p.activo = 1
+          AND pr.activo = 1
+          AND pr.tipo_descuento = 'porcentaje'
+        ORDER BY pr.fecha_inicio DESC
+        LIMIT :lim
+    ";
+
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->bindValue(":lim", $limit, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+}
+
 }

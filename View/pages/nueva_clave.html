@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MegaSantiago | Nueva contraseña</title>
+
+  <!-- ✅ Mismos CSS -->
+  <link rel="stylesheet" href="/View/assets/css/estilos.css">
+  <link rel="stylesheet" href="/View/assets/css/overrides.css">
+
+  <!-- mismo mini-style de auth -->
+  <style>
+    .auth-form label{display:block;font-weight:600;margin-top:14px;margin-bottom:6px}
+    .auth-form input{width:100%;padding:12px 14px;box-sizing:border-box}
+    .auth-note{margin-top:12px;font-size:13px;color:#666;line-height:1.35}
+  </style>
+</head>
+<body>
+
+  <!-- ===== LAYOUT ===== -->
+  <div id="header"></div>
+  <!-- ================== -->
+
+  <main class="auth-page">
+    <section class="auth-container">
+
+      <div class="auth-card auth-card--login">
+        <h2>Nueva contraseña</h2>
+
+        <p class="auth-note">
+          Ingresa tu nueva contraseña para restablecer el acceso a tu cuenta.
+        </p>
+
+        <form id="form-nueva-clave" class="auth-form">
+
+          <label for="password">Nueva contraseña <span class="req">*</span></label>
+          <input
+            id="password"
+            type="password"
+            minlength="6"
+            required
+            placeholder="********"
+          />
+
+          <label for="confirm">Confirmar contraseña <span class="req">*</span></label>
+          <input
+            id="confirm"
+            type="password"
+            minlength="6"
+            required
+            placeholder="********"
+          />
+
+          <button type="submit" class="btn-auth-primary" style="margin-top:16px;">
+            GUARDAR
+          </button>
+
+          <div style="margin-top:14px;">
+            <a href="/View/pages/login.html" class="auth-link">
+              Volver a iniciar sesión
+            </a>
+          </div>
+
+          <p id="msg" class="auth-note"></p>
+        </form>
+
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <div id="footer"></div>
+  <div id="scripts"></div>
+
+  <!-- ✅ Layout loader (MISMO que recuperar clave) -->
+  <script src="/View/assets/js/layout-loader.js"></script>
+  <script src="/View/assets/js/busqueda-global.js"></script>
+
+  <!-- ===== LÓGICA ===== -->
+  <script>
+    const API = "/Controller/ResetPasswordController.php";
+
+    function getToken() {
+      const params = new URLSearchParams(window.location.search);
+      return (params.get("token") || "").trim();
+    }
+
+    const form = document.getElementById("form-nueva-clave");
+    const msg  = document.getElementById("msg");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msg.textContent = "";
+
+      const token = getToken();
+      const password = document.getElementById("password").value;
+      const confirm  = document.getElementById("confirm").value;
+
+      if (!token) {
+        msg.textContent = "Enlace inválido o expirado.";
+        return;
+      }
+      if (password.length < 6) {
+        msg.textContent = "La contraseña debe tener al menos 6 caracteres.";
+        return;
+      }
+      if (password !== confirm) {
+        msg.textContent = "Las contraseñas no coinciden.";
+        return;
+      }
+
+      const resp = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, password, confirm })
+      });
+
+      const data = await resp.json().catch(() => null);
+      if (!data) {
+        msg.textContent = "Respuesta inválida del servidor.";
+        return;
+      }
+
+      if (data.ok) {
+        msg.textContent = "Contraseña actualizada. Ya puedes iniciar sesión.";
+        form.reset();
+      } else {
+        msg.textContent = data.error || "No se pudo actualizar la contraseña.";
+      }
+    });
+
+    // cargar layout igual que en recuperar-clave.html
+    loadLayout().then(() => {
+      const s = document.createElement("script");
+      s.src = "/View/assets/js/sesion-usuario.js";
+      document.body.appendChild(s);
+    });
+  </script>
+
+</body>
+</html>

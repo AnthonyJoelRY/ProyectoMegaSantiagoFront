@@ -21,8 +21,6 @@ class ProductoService
     // ============================
     private function mapProductoRow(array $row): array
     {
-        // Se instancia la Entity para centralizar el mapeo,
-        // pero devolvemos array para no romper vistas/controladores existentes.
         return Producto::fromRow($row)->toArray();
     }
 
@@ -35,25 +33,31 @@ class ProductoService
         return $out;
     }
 
-
     public function listarPorCategoria(string $categoria): array
     {
+        $categoria = trim($categoria);
         if ($categoria === "") {
             return ["error" => "Falta parámetro categoria"];
         }
         return $this->mapProductoRows($this->productoDAO->listarPorCategoria($categoria));
     }
 
-    public function buscar(string $termino, ?int $idUsuario): array
+    // ✅ CAMBIO: idUsuario ahora es opcional (Opción A compatible)
+    public function buscar(string $termino, ?int $idUsuario = null): array
     {
+        $termino = trim($termino);
         if ($termino === "") {
             return ["error" => "Falta parámetro q"];
         }
 
         $productos = $this->productoDAO->buscarPorNombre($termino);
 
-        // registra historial (no rompe si idUsuario viene null)
-        $this->busquedaDAO->registrar($termino, $idUsuario, count($productos));
+        // ✅ CAMBIO: El historial NO debe romper el endpoint
+        try {
+            $this->busquedaDAO->registrar($termino, $idUsuario, count($productos));
+        } catch (Throwable $e) {
+            // ignorar: si falla busquedas (autoincrement/PK), la búsqueda igual debe responder
+        }
 
         return $this->mapProductoRows($productos);
     }
@@ -64,11 +68,6 @@ class ProductoService
         return $this->mapProductoRows($this->productoDAO->masVendidos($limit));
     }
 
-    public function ofertas(int $limit = 6): array
-    {
-        if ($limit <= 0) $limit = 6;
-        return $this->mapProductoRows($this->productoDAO->ofertas($limit));
-    }
 
     public function promociones(int $limit = 3): array
     {
@@ -79,12 +78,12 @@ class ProductoService
     public function detalle(int $idProducto): array
     {
         if ($idProducto <= 0) {
-            return ["error" => "Falta parámetro id"]; 
+            return ["error" => "Falta parámetro id"];
         }
 
         $prod = $this->productoDAO->obtenerDetalle($idProducto);
         if (!$prod) {
-            return ["error" => "Producto no encontrado"]; 
+            return ["error" => "Producto no encontrado"];
         }
 
         return $this->mapProductoRow($prod);
@@ -93,9 +92,22 @@ class ProductoService
     public function relacionados(int $idProducto, int $limit = 4): array
     {
         if ($idProducto <= 0) {
-            return ["error" => "Falta parámetro id"]; 
+            return ["error" => "Falta parámetro id"];
         }
         if ($limit <= 0) $limit = 4;
         return $this->mapProductoRows($this->productoDAO->relacionados($idProducto, $limit));
     }
+    
+    public function ofertas(int $limit = 6): array
+{
+    if ($limit <= 0) $limit = 6;
+
+    // usa el DAO real que sí existe en esta clase
+    $rows = $this->productoDAO->ofertas($limit);
+
+    // devuelve igual que antes para que tu index NO se dañe
+    return $this->mapProductoRows($rows);
+}
+
+
 }

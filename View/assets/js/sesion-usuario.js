@@ -40,8 +40,10 @@ function initSesionUsuario() {
     <span class="user-name">Hola, ${usuario.email}</span>
   `;
 
-  // 👉 ADMINISTRADOR
-  if (usuario.rol === 1) {
+  // 👉 ADMINISTRADOR o EMPLEADO
+  // Admin (1): panel completo
+  // Empleado (4): panel limitado
+  if (usuario.rol === 1 || usuario.rol === 4) {
     htmlSesion += `
       <a href="${base}/dashboard" class="link-header">
         📊 Dashboard
@@ -54,6 +56,16 @@ function initSesionUsuario() {
     htmlSesion += `
       <a href="${base}/empresa/panel.html" class="link-header">
         🏢 Panel empresa
+      </a>
+    `;
+  }
+
+
+  // 👉 Mis pedidos (cualquier rol autenticado)
+  if (usuario && usuario.email) {
+    htmlSesion += `
+      <a href="${base}/mis-pedidos" class="link-header">
+        📦 Mis pedidos
       </a>
     `;
   }

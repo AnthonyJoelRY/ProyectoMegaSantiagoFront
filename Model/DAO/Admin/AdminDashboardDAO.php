@@ -41,13 +41,17 @@ class AdminDashboardDAO {
         ")->fetchColumn();
     }
 
-    public function countInventarioBajoStock(): int {
-        return (int)$this->pdo->query("
-            SELECT COUNT(*)
-            FROM inventario
-            WHERE stock_actual <= 5
-        ")->fetchColumn();
-    }
+    public function countInventarioBajoStock(): int
+{
+    return (int)$this->pdo->query("
+        SELECT COUNT(*)
+        FROM productos p
+        LEFT JOIN inventario i ON i.id_producto = p.id_producto
+        WHERE p.activo = 1
+          AND COALESCE(i.stock_actual, 0) <= p.stock_minimo
+    ")->fetchColumn();
+}
+
 
     public function ultimoProductoNombre(): string {
         return (string)$this->pdo->query("

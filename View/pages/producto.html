@@ -96,7 +96,12 @@
     </section>
 
     <section class="related" id="relWrap" style="display:none;">
-      <h2>Productos relacionados</h2>
+      <!--
+        ✅ Título dinámico:
+        - "Productos relacionados" cuando hay relacionados por categoría.
+        - "Más vendidos" cuando se usa fallback.
+      -->
+      <h2 id="relTitulo">Productos relacionados</h2>
       <div class="grid-rel" id="gridRel"></div>
     </section>
   </main>

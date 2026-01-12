@@ -34,11 +34,11 @@
 
         <form id="formLogin" class="auth-form">
           <label for="login-email">Email <span class="req">*</span></label>
-          <input type="email" id="login-email" required autocomplete="email">
+          <input type="email" id="login-email" name="email" required autocomplete="email">
 
           <label for="login-clave">Contraseña <span class="req">*</span></label>
           <div class="auth-password-wrapper">
-            <input type="password" id="login-clave" required autocomplete="current-password">
+            <input type="password" id="login-clave" name="clave" required autocomplete="current-password">
             <button type="button" class="btn-eye" data-target="login-clave">👁</button>
           </div>
 
@@ -54,17 +54,17 @@
 
         <form id="formRegistro" class="auth-form">
           <label for="reg-nombre">Nombre <span class="req">*</span></label>
-          <input type="text" id="reg-nombre" required autocomplete="given-name">
+          <input type="text" id="reg-nombre" name="nombre" required autocomplete="given-name">
 
           <label for="reg-apellido">Apellido <span class="req">*</span></label>
-          <input type="text" id="reg-apellido" required autocomplete="family-name">
+          <input type="text" id="reg-apellido" name="apellido" required autocomplete="family-name">
 
           <label for="reg-correo">Email <span class="req">*</span></label>
-          <input type="email" id="reg-correo" required autocomplete="email">
+          <input type="email" id="reg-correo" name="email" required autocomplete="email">
 
           <label for="reg-clave">Contraseña <span class="req">*</span></label>
           <div class="auth-password-wrapper">
-            <input type="password" id="reg-clave" required autocomplete="new-password">
+            <input type="password" id="reg-clave" name="clave" required autocomplete="new-password">
             <button type="button" class="btn-eye" data-target="reg-clave">👁</button>
           </div>
 

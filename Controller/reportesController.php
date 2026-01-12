@@ -15,33 +15,58 @@ $accion = $_GET["accion"] ?? "";
 // ROUTES (SIN SWITCH)
 // ===============================
 $routes = [
+
+    // ===============================
+    // KPIs
+    // ===============================
     "kpis" => function () use ($service) {
-        // La vista admin espera estas llaves (ventasTotales, totalPedidos, etc.)
         api_responder([
             "ventasTotales"      => $service->ventasTotales(),
-            "totalPedidos"      => $service->totalPedidos(),
-            "totalClientes"     => $service->totalClientes(),
-            "promedioPorPedido" => $service->promedioPorPedido(),
-            "totalIVA"          => $service->totalIVA(),
+            "totalPedidos"       => $service->totalPedidos(),
+            "totalClientes"      => $service->totalClientes(),
+            "promedioPorPedido"  => $service->promedioPorPedido(),
+            "totalIVA"           => $service->totalIVA(),
         ]);
     },
+
+    // ===============================
+    // VENTAS
+    // ===============================
     "ventasDia" => function () use ($service) {
         api_responder($service->ventasPorDia());
     },
+
     "ventasMes" => function () use ($service) {
         api_responder($service->ventasPorMes());
     },
+
+    // ===============================
+    // PRODUCTOS
+    // ===============================
     "productosMasVendidos" => function () use ($service) {
         api_responder($service->productosMasVendidos(5));
     },
+
     "productosMenosVendidos" => function () use ($service) {
         api_responder($service->productosMenosVendidos(5));
     },
+
+    "productosSinStock" => function () use ($service) {
+        api_responder($service->productosSinStock());
+    },
+
+    "productosStockBajo" => function () use ($service) {
+        api_responder($service->productosStockBajo());
+    },
+
+    // ===============================
+    // CLIENTES
+    // ===============================
     "clientesTop" => function () use ($service) {
-        // método no recibe parámetro en esta base, ya viene con LIMIT 5
         api_responder($service->clientesTop());
     },
 ];
+
 
 if (!isset($routes[$accion])) {
     api_responder(["error" => "Acción inválida."], 400);

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MegaSantiago | Carrito</title>
 
-  <!-- ✅ InfinityFree: rutas absolutas -->
+  <!-- ✅ Estilos -->
   <link rel="stylesheet" href="/View/assets/css/estilos.css" />
   <link rel="stylesheet" href="/View/assets/css/overrides.css" />
 </head>
@@ -42,11 +42,85 @@
         </table>
 
         <div class="cart-footer">
-          <button id="btnVaciar" class="btn-cart-secondary">Vaciar carrito</button>
+          <button id="btnVaciar" class="btn-cart-secondary">
+            Vaciar carrito
+          </button>
 
           <div class="cart-total">
             <span>Total:</span>
             <strong id="totalCarrito">$0.00</strong>
+          </div>
+
+          <div
+            id="empresa-descuento-msg"
+            style="display:none; margin-top:8px; font-weight:600;"
+          >
+            ✅ Descuento de empresa (10%) se aplicará al finalizar la compra.
+          </div>
+        </div>
+
+        <!-- ===== CHECKOUT ===== -->
+        <div id="checkout-opciones" style="margin-top:16px; padding:14px; background:#fff; border-radius:12px; box-shadow:0 6px 16px rgba(0,0,0,.06);">
+          <h3 style="margin:0 0 10px 0;">Entrega</h3>
+
+          <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:12px;">
+            <label style="display:flex; gap:8px; align-items:center;">
+              <input type="radio" name="tipo_entrega" value="retiro_local" />
+              Retirar en el local
+            </label>
+
+            <label style="display:flex; gap:8px; align-items:center;">
+              <input type="radio" name="tipo_entrega" value="envio" checked />
+              Entrega a domicilio
+            </label>
+          </div>
+
+          <!-- Retiro local -->
+          <div id="checkout-retiro" style="display:none;">
+            <label style="display:block; font-weight:600; margin-bottom:6px;">
+              Selecciona sucursal
+            </label>
+            <select id="selectSucursalRetiro" style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:10px;">
+              <option value="">Cargando sucursales...</option>
+            </select>
+            <p style="margin:8px 0 0 0; color:#666; font-size:13px;">
+              Antes de pagar, validaremos que exista stock en esa sucursal.
+            </p>
+          </div>
+
+          <!-- Envío domicilio -->
+          <div id="checkout-envio" style="display:block;">
+            <label style="display:block; font-weight:600; margin-bottom:6px;">
+              Dirección de entrega
+            </label>
+
+            <!-- 🔒 SELECT OCULTO (NO SE BORRA) -->
+            <select
+              id="selectDireccionEnvio"
+              style="display:none; width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:10px;">
+              <option value=""></option>
+            </select>
+
+            <div style="margin-top:10px; display:grid; gap:10px;">
+              <input id="dir_direccion" type="text" placeholder="Dirección (calle, número, etc.)"
+                style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:10px;" />
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <input id="dir_ciudad" type="text" placeholder="Ciudad" value="Loja" readonly style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:10px; background:#f7f7f7;" />
+                <input id="dir_provincia" type="text" placeholder="Provincia" value="Loja" readonly style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:10px; background:#f7f7f7;" />
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <input id="dir_codigo" type="text" placeholder="Código postal (opcional)"
+                  style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:10px;" />
+                <input id="dir_referencia" type="text" placeholder="Referencia (opcional)"
+                  style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:10px;" />
+              </div>
+            </div>
+
+            <p style="margin:8px 0 0 0; color:#666; font-size:13px;">
+              Antes de pagar, buscaremos una sucursal con stock para completar tu pedido.
+            </p>
           </div>
         </div>
 
@@ -54,32 +128,25 @@
           <div id="paypal-button-container"></div>
           <p id="paypal-status" style="margin-top:10px;"></p>
         </div>
-      </div>
 
+      </div>
     </section>
   </main>
 
   <!-- ===== FOOTER ===== -->
   <div id="footer"></div>
   <div id="scripts"></div>
-  <!-- ================== -->
 
-  <!-- ✅ Layout loader -->
+  <!-- ===== SCRIPTS ===== -->
   <script src="/View/assets/js/layout-loader.js"></script>
-
-  <!-- ✅ (Opcional) si tu header usa contador -->
   <script src="/View/assets/js/carrito-ui.js"></script>
-
-  <!-- ✅ Lógica del carrito -->
   <script src="/View/assets/js/pages/carrito.js"></script>
 
   <script>
     loadLayout().then(() => {
-      window.initCarritoPage?.();
-
-      // (Opcional) sesión usuario
       const s = document.createElement("script");
       s.src = "/View/assets/js/sesion-usuario.js";
+      s.onload = () => window.initCarritoPage?.();
       document.body.appendChild(s);
     });
   </script>

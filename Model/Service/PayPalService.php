@@ -1,7 +1,18 @@
 <?php
 // Model/Service/PayPalService.php
 
-require_once __DIR__ . '/../Config/paypal_credentials.php';
+// ✅ Cargar credenciales PayPal (compatible con hosting Linux y tu estructura actual)
+$cred1 = __DIR__ . "/../Config/paypal_credentials.php";     // htdocs/Model/Config/paypal_credentials.php ✅
+$cred2 = __DIR__ . "/../../Config/paypal_credentials.php";  // htdocs/Config/paypal_credentials.php (fallback)
+
+if (file_exists($cred1)) {
+    require_once $cred1;
+} elseif (file_exists($cred2)) {
+    require_once $cred2;
+} else {
+    throw new Exception("No se encontró paypal_credentials.php. Busqué en: $cred1 y $cred2");
+}
+
 require_once __DIR__ . "/../DAO/ProductoDAO.php";
 
 class PayPalService
@@ -26,7 +37,6 @@ class PayPalService
 
     public function getPublicConfig(): array
     {
-        // Sólo datos públicos (no exponer secret)
         return [
             "clientId" => $this->clientId,
             "currency" => $this->currency
@@ -73,18 +83,37 @@ class PayPalService
         return $res;
     }
 
+    /**
+     * Obtiene el detalle/estado de una orden.
+     * Útil como fallback cuando PayPal responde ORDER_ALREADY_CAPTURED.
+     */
+    public function getOrder(string $orderId): array
+    {
+        $orderId = trim($orderId);
+        if ($orderId === "") return ["error" => "orderId inválido."];
+
+        $accessToken = $this->getAccessToken();
+        if (isset($accessToken["error"])) return $accessToken;
+
+        $url = $this->baseUrl . "/v2/checkout/orders/" . rawurlencode($orderId);
+        $res = $this->curlJson("GET", $url, $accessToken["access_token"], null);
+        if (isset($res["error"])) return $res;
+
+        return $res;
+    }
+
     // ==========================
     // Helpers internos
     // ==========================
     private function calcularTotalDesdeBD(array $cartItems): float
     {
-        // Espera items del tipo: [{id: 1, cantidad: 2}, ...]
         $ids = [];
         $qtyById = [];
 
         foreach ($cartItems as $it) {
-            $id = (int)($it["id"] ?? 0);
-            $qty = (int)($it["cantidad"] ?? $it["qty"] ?? 0);
+            // ✅ soportar nombres de campos alternativos (compatibilidad con distintos formatos de carrito)
+            $id = (int)($it["id"] ?? $it["id_producto"] ?? $it["idProducto"] ?? 0);
+            $qty = (int)($it["cantidad"] ?? $it["qty"] ?? $it["quantity"] ?? 0);
             if ($id > 0 && $qty > 0) {
                 $ids[] = $id;
                 $qtyById[$id] = ($qtyById[$id] ?? 0) + $qty;
@@ -144,20 +173,29 @@ class PayPalService
     private function curlJson(string $method, string $url, string $accessToken, $payload): array
     {
         $ch = curl_init();
-        $json = json_encode($payload, JSON_UNESCAPED_UNICODE);
+        $method = strtoupper(trim($method));
 
-        curl_setopt_array($ch, [
+        $headers = [
+            "Accept: application/json",
+            "Authorization: Bearer " . $accessToken,
+        ];
+
+        // En GET no debemos mandar body (algunos hostings/APIs se ponen quisquillosos)
+        $options = [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => $method,
-            CURLOPT_HTTPHEADER => [
-                "Content-Type: application/json",
-                "Accept: application/json",
-                "Authorization: Bearer " . $accessToken
-            ],
-            CURLOPT_POSTFIELDS => $json,
-            CURLOPT_TIMEOUT => 30
-        ]);
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_TIMEOUT => 30,
+        ];
+
+        if ($method !== "GET") {
+            $headers[] = "Content-Type: application/json";
+            $options[CURLOPT_HTTPHEADER] = $headers;
+            $options[CURLOPT_POSTFIELDS] = json_encode($payload, JSON_UNESCAPED_UNICODE);
+        }
+
+        curl_setopt_array($ch, $options);
 
         $raw = curl_exec($ch);
         $err = curl_error($ch);
@@ -175,4 +213,3 @@ class PayPalService
         return $data ?: ["error" => "Respuesta inválida de PayPal.", "raw" => $raw];
     }
 }
-?>

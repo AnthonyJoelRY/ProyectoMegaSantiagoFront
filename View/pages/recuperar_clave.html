@@ -5,50 +5,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MegaSantiago | Recuperar clave</title>
 
-  <!-- ✅ Rutas absolutas para InfinityFree -->
+  <!-- ✅ InfinityFree: rutas absolutas -->
   <link rel="stylesheet" href="/View/assets/css/estilos.css">
   <link rel="stylesheet" href="/View/assets/css/overrides.css">
+
+  <!-- (Opcional) Si no quieres tocar overrides.css todavía, puedes dejar este mini-style
+       para clonar el mismo look de auth-form que tu login.html -->
+  <style>
+    .auth-form label{display:block;font-weight:600;margin-top:14px;margin-bottom:6px}
+    .auth-form input{width:100%;padding:12px 14px;box-sizing:border-box}
+    .auth-note{margin-top:12px;font-size:13px;color:#666;line-height:1.35}
+  </style>
 </head>
 <body>
 
   <!-- ===== LAYOUT ===== -->
   <div id="header"></div>
-  <div id="nav"></div>
   <!-- ================== -->
 
-  <main class="auth-page" style="padding: 24px;">
-    <h1>Recuperar contraseña</h1>
-    <p>Ingresa tu correo y te enviaremos instrucciones para restablecer tu contraseña.</p>
+  <main class="auth-page">
+    <section class="auth-container">
 
-    <form id="form-recuperar" style="max-width: 420px;">
-      <label for="email">Correo</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        required
-        style="width:100%;padding:10px;margin:8px 0 12px 0;"
-      />
+      <div class="auth-card auth-card--login">
+        <h2>Recuperar contraseña</h2>
 
-      <button type="submit" style="padding:10px 14px;">
-        Enviar
-      </button>
-    </form>
+        <p class="auth-note">
+          Ingresa tu correo y te enviaremos instrucciones para restablecer tu contraseña.
+        </p>
 
-    <p style="margin-top: 14px;">
-      <a href="/View/pages/login.html">Volver a iniciar sesión</a>
-    </p>
+        <form id="form-recuperar" class="auth-form">
+          <label for="email">Email <span class="req">*</span></label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            autocomplete="email"
+            placeholder="tucorreo@ejemplo.com"
+          />
+
+          <button type="submit" class="btn-auth-primary" style="margin-top:16px;">
+            ENVIAR
+          </button>
+
+          <div style="margin-top:14px;">
+            <a href="/View/pages/login.html" class="auth-link">Volver a iniciar sesión</a>
+          </div>
+        </form>
+
+      </div>
+
+    </section>
   </main>
 
   <!-- ===== FOOTER ===== -->
   <div id="footer"></div>
   <div id="scripts"></div>
-  <!-- ================== -->
 
-  <!-- Layout -->
+  <!-- ✅ Layout loader -->
   <script src="/View/assets/js/layout-loader.js"></script>
 
-  <!-- Lógica de la página -->
+  <!-- ✅ Búsqueda global del header -->
+  <script src="/View/assets/js/busqueda-global.js"></script>
+
+  <!-- ✅ Lógica de la página -->
   <script src="/View/assets/js/pages/recuperar-clave.js"></script>
+
+  <script>
+    loadLayout().then(() => {
+      // si necesitas algo al cargar, aquí
+      const s = document.createElement("script");
+      s.src = "/View/assets/js/sesion-usuario.js";
+      document.body.appendChild(s);
+    });
+  </script>
 </body>
 </html>

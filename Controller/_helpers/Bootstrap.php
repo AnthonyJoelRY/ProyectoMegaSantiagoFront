@@ -37,3 +37,33 @@ set_error_handler(function (int $severity, string $message, string $file, int $l
     // Convertir warnings/notices en excepción para que pase por el exception handler
     throw new ErrorException($message, 0, $severity, $file, $line);
 });
+
+
+// ✅ Capturar errores fatales (parse error, require missing, etc.) y responder JSON
+register_shutdown_function(function (): void {
+    $err = error_get_last();
+    if (!$err) return;
+
+    $fatalTypes = [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR];
+    if (!in_array($err["type"] ?? 0, $fatalTypes, true)) return;
+
+    // Si ya hubo salida, no hacemos nada
+    if (headers_sent()) return;
+
+    api_send_json_headers(true);
+    http_response_code(500);
+
+    if (APP_DEBUG) {
+        echo json_encode([
+            "error" => "FatalError",
+            "message" => $err["message"] ?? "Fatal error",
+            "file" => basename($err["file"] ?? ""),
+            "line" => (int)($err["line"] ?? 0),
+        ], JSON_UNESCAPED_UNICODE);
+    } else {
+        echo json_encode([
+            "error" => "Fallo de inicialización",
+        ], JSON_UNESCAPED_UNICODE);
+    }
+});
+

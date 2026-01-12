@@ -5,17 +5,22 @@ require_once __DIR__ . "/../../Model/Config/base.php";
 require_once __DIR__ . "/../../Model/DB/db.php";
 require_once __DIR__ . "/../../Model/Service/Admin/AdminProductoService.php";
 
+
 class ProductosController {
 
-    private function asegurarAdmin(): void {
-        if (!isset($_SESSION["rol"]) || (int)$_SESSION["rol"] !== 1) {
+    private function asegurarAdminOEmpleado(): void {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
+        $rol = isset($_SESSION["rol"]) ? (int)$_SESSION["rol"] : 0;
+        if (!isset($_SESSION["usuario"]) || ($rol !== 1 && $rol !== 4)) {
             header("Location: " . PROJECT_BASE . "/index.html");
             exit;
         }
     }
 
     public function index(): void {
-        $this->asegurarAdmin();
+        $this->asegurarAdminOEmpleado();
 
         $q = trim($_GET["q"] ?? "");
         $pdo = obtenerConexion();
@@ -29,7 +34,7 @@ class ProductosController {
     }
 
     public function nuevo(): void {
-        $this->asegurarAdmin();
+        $this->asegurarAdminOEmpleado();
 
         $pdo = obtenerConexion();
         $service = new AdminProductoService($pdo);
@@ -51,7 +56,7 @@ class ProductosController {
     }
 
     public function editar(): void {
-        $this->asegurarAdmin();
+        $this->asegurarAdminOEmpleado();
 
         $id = (int)($_GET["id"] ?? 0);
         if ($id <= 0) {
@@ -75,7 +80,7 @@ class ProductosController {
     }
 
     public function acciones(): void {
-        $this->asegurarAdmin();
+        $this->asegurarAdminOEmpleado();
 
         if ($_SERVER["REQUEST_METHOD"] !== "POST") {
             header("Location: " . PROJECT_BASE . "/panel/productos");
@@ -86,7 +91,15 @@ class ProductosController {
         $pdo = obtenerConexion();
         $service = new AdminProductoService($pdo);
 
+        // 🔴 DEBUG: registrar cada POST que entra a acciones()
+file_put_contents(
+    __DIR__ . "/debug_post.log",
+    date("Y-m-d H:i:s") . " | accion=" . $accion . " | POST=" . json_encode($_POST) . PHP_EOL,
+    FILE_APPEND
+);
+        
         try {
+            
             switch ($accion) {
                 case "crear":
                     $service->crear($_POST);
@@ -94,10 +107,11 @@ class ProductosController {
                     exit;
 
                 case "editar":
-                    $id = (int)($_POST["id_producto"] ?? 0);
-                    $service->editar($id, $_POST);
-                    header("Location: " . PROJECT_BASE . "/panel/productos/editar?id=" . $id . "&ok=1");
-                    exit;
+    $id = (int)($_POST["id_producto"] ?? 0);
+    $service->editar($id, $_POST);
+    header("Location: " . PROJECT_BASE . "/panel/productos?edit=1");
+    exit;
+
 
                 case "desactivar":
                     $id = (int)($_POST["id_producto"] ?? 0);
@@ -116,8 +130,14 @@ class ProductosController {
                     exit;
             }
         } catch (Throwable $e) {
-            // Mantener el comportamiento sin "romper": mostramos el mensaje como hacía el código con die()
-            die($e->getMessage());
-        }
+    echo "<pre>";
+    echo "ERROR: " . $e->getMessage() . "\n\n";
+    echo "ARCHIVO: " . $e->getFile() . "\n";
+    echo "LINEA: " . $e->getLine() . "\n\n";
+    echo "TRACE:\n" . $e->getTraceAsString();
+    echo "</pre>";
+    exit;
+}
+
     }
 }

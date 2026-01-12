@@ -163,4 +163,42 @@ PRODUCTOS MENOS VENDIDOS
 
         return $stmt->fetchAll();
     }
+    
+    public function productosSinStock(): array
+{
+    $stmt = $this->pdo->query("
+        SELECT 
+            p.id_producto,
+            p.nombre,
+            i.stock_actual
+        FROM productos p
+        LEFT JOIN inventario i ON i.id_producto = p.id_producto
+        WHERE p.activo = 1
+          AND COALESCE(i.stock_actual, 0) = 0
+        ORDER BY p.nombre
+    ");
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+public function productosStockBajo(): array
+{
+    
+    $stmt = $this->pdo->query("
+        SELECT 
+            p.id_producto,
+            p.nombre,
+            COALESCE(i.stock_actual, 0) AS stock_actual,
+            p.stock_minimo
+        FROM productos p
+        LEFT JOIN inventario i ON i.id_producto = p.id_producto
+        WHERE p.activo = 1
+          AND COALESCE(i.stock_actual, 0) <= p.stock_minimo
+        ORDER BY stock_actual ASC
+    ");
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
 }

@@ -2,6 +2,7 @@
 // Model/Service/Admin/AdminUsuarioService.php
 
 require_once __DIR__ . "/../../DAO/Admin/AdminUsuarioDAO.php";
+require_once __DIR__ . "/../../Entity/Usuario.php";
 
 class AdminUsuarioService {
     private AdminUsuarioDAO $dao;
@@ -11,8 +12,14 @@ class AdminUsuarioService {
     }
 
     public function roles(): array { return $this->dao->roles(); }
-    public function listar(): array { return $this->dao->listar(); }
-    public function obtener(int $id): ?array { return $this->dao->obtener($id); }
+    public function listar(): array {
+        $rows = $this->dao->listar();
+        return array_map(fn($r) => is_array($r) ? Usuario::fromRow($r)->toArray() : $r, $rows);
+    }
+    public function obtener(int $id): ?array {
+        $row = $this->dao->obtener($id);
+        return $row ? Usuario::fromRow($row)->toArray() : null;
+    }
 
     public function actualizar(int $id, array $post): void {
         $nombre = trim($post["nombre"] ?? "");

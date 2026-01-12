@@ -110,23 +110,51 @@
     });
   }
 
+  // ✅ Relacionados con fallback "Más vendidos"
+  // - Si hay relacionados por categoría → título "Productos relacionados"
+  // - Si no hay → muestra "Más vendidos" para que la sección no quede vacía
   async function cargarRelacionados(id) {
     const relWrap = document.getElementById("relWrap");
     const grid = document.getElementById("gridRel");
+    const titulo = document.getElementById("relTitulo") || relWrap?.querySelector("h2");
 
     if (!relWrap || !grid) return;
 
-    const resp = await fetch(`${API()}?accion=relacionados&id=${encodeURIComponent(id)}&limit=4`);
-    const data = await resp.json().catch(() => null);
+    async function pintar(lista, textoTitulo) {
+      const arr = (Array.isArray(lista) ? lista : []).filter(
+        (p) => String(p?.id ?? "") !== String(id)
+      );
 
-    if (!resp.ok || !Array.isArray(data) || data.length === 0) {
-      relWrap.style.display = "none";
+      if (!arr.length) {
+        relWrap.style.display = "none";
+        return;
+      }
+
+      if (titulo) titulo.textContent = textoTitulo;
+      relWrap.style.display = "block";
+      grid.innerHTML = arr.map(cardRelacionado).join("");
+      wireClickCards(grid);
+    }
+
+    // 1) Intentar relacionados
+    const respRel = await fetch(`${API()}?accion=relacionados&id=${encodeURIComponent(id)}&limit=4`);
+    const dataRel = await respRel.json().catch(() => null);
+
+    if (respRel.ok && Array.isArray(dataRel) && dataRel.length) {
+      await pintar(dataRel, "Productos relacionados");
       return;
     }
 
-    relWrap.style.display = "block";
-    grid.innerHTML = data.map(cardRelacionado).join("");
-    wireClickCards(grid);
+    // 2) Fallback: más vendidos
+    const respMV = await fetch(`${API()}?accion=masVendidos&limit=4`);
+    const dataMV = await respMV.json().catch(() => null);
+
+    if (respMV.ok && Array.isArray(dataMV) && dataMV.length) {
+      await pintar(dataMV, "Más vendidos");
+      return;
+    }
+
+    relWrap.style.display = "none";
   }
 
   async function cargarDetalle() {

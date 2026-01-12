@@ -3,6 +3,14 @@
 
 class AdminProductoDAO {
     public function __construct(private PDO $pdo) {}
+    
+    private function assertIdProducto(int $idProducto): void
+{
+    if ($idProducto <= 0) {
+        throw new Exception("❌ ID de producto inválido: " . $idProducto);
+    }
+}
+
 
     public function listar(?string $q = null): array {
         $sql = "
@@ -45,6 +53,7 @@ class AdminProductoDAO {
                 p.sku,
                 p.aplica_iva,
                 p.activo,
+                p.stock_minimo,
                 IFNULL(i.stock_actual, 0) AS stock_actual,
                 img.url_imagen
             FROM productos p
@@ -68,27 +77,78 @@ class AdminProductoDAO {
         ")->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
-    public function insertarProducto(array $data): int {
-        $stmt = $this->pdo->prepare("
-            INSERT INTO productos
-            (id_categoria, nombre, descripcion_corta, descripcion_larga,
-             precio, precio_oferta, sku, aplica_iva, activo)
-            VALUES
-            (:id_categoria, :nombre, :descripcion_corta, :descripcion_larga,
-             :precio, :precio_oferta, :sku, :aplica_iva, 1)
-        ");
-        $stmt->execute($data);
-        return (int)$this->pdo->lastInsertId();
+public function insertarProducto(array $params): int
+{
+    $stmt = $this->pdo->prepare("
+        INSERT INTO productos (
+            id_categoria,
+            nombre,
+            descripcion_corta,
+            descripcion_larga,
+            precio,
+            precio_oferta,
+            sku,
+            aplica_iva,
+            stock_minimo
+        ) VALUES (
+            :id_categoria,
+            :nombre,
+            :descripcion_corta,
+            :descripcion_larga,
+            :precio,
+            :precio_oferta,
+            :sku,
+            :aplica_iva,
+            :stock_minimo
+        )
+    ");
+
+    $stmt->execute([
+        ":id_categoria"        => $params["id_categoria"],
+        ":nombre"              => $params["nombre"],
+        ":descripcion_corta"   => $params["descripcion_corta"],
+        ":descripcion_larga"   => $params["descripcion_larga"],
+        ":precio"              => $params["precio"],
+        ":precio_oferta"       => $params["precio_oferta"] ?? null,
+        ":sku"                 => $params["sku"],
+        ":aplica_iva"          => $params["aplica_iva"],
+        ":stock_minimo"        => $params["stock_minimo"],
+    ]);
+
+    $id = (int)$this->pdo->lastInsertId();
+
+    if ($id <= 0) {
+        throw new Exception("❌ No se pudo obtener el id_producto");
     }
 
-    public function insertarInventario(int $idProducto): void {
-        $stmt = $this->pdo->prepare("
-            INSERT INTO inventario
-                (id_producto, stock_actual, ubicacion_almacen, ultima_actualizacion)
-            VALUES (?, 0, 'Bodega principal', NOW())
-        ");
-        $stmt->execute([$idProducto]);
-    }
+    return $id;
+}
+
+
+
+
+ 
+    
+public function actualizarInventario(int $idProducto, array $data): void {
+    $this->assertIdProducto($idProducto);
+
+    $stmt = $this->pdo->prepare("
+        UPDATE inventario
+        SET stock_actual = :stock_actual,
+            ubicacion_almacen = :ubicacion_almacen,
+            ultima_actualizacion = :ultima_actualizacion
+        WHERE id_producto = :id
+    ");
+    $stmt->execute([
+        ":stock_actual" => $data["stock_actual"],
+        ":ubicacion_almacen" => $data["ubicacion_almacen"],
+        ":ultima_actualizacion" => $data["ultima_actualizacion"],
+        ":id" => $idProducto
+    ]);
+}
+
+
+
 
     public function resetImagenPrincipal(int $idProducto): void {
         $stmt = $this->pdo->prepare("
@@ -100,29 +160,36 @@ class AdminProductoDAO {
     }
 
     public function insertarImagenPrincipal(int $idProducto, string $urlImagen): void {
-        $stmt = $this->pdo->prepare("
-            INSERT INTO producto_imagenes (id_producto, url_imagen, es_principal)
-            VALUES (?, ?, 1)
-        ");
-        $stmt->execute([$idProducto, $urlImagen]);
-    }
+    $this->assertIdProducto($idProducto);
+
+    $stmt = $this->pdo->prepare("
+        INSERT INTO producto_imagenes (id_producto, url_imagen, es_principal)
+        VALUES (?, ?, 1)
+    ");
+    $stmt->execute([$idProducto, $urlImagen]);
+}
+
 
     public function actualizarProducto(int $idProducto, array $data): void {
-        $data[":id_producto"] = $idProducto;
-        $stmt = $this->pdo->prepare("
-            UPDATE productos SET
-                id_categoria = :id_categoria,
-                nombre = :nombre,
-                descripcion_corta = :descripcion_corta,
-                descripcion_larga = :descripcion_larga,
-                precio = :precio,
-                precio_oferta = :precio_oferta,
-                sku = :sku,
-                aplica_iva = :aplica_iva
-            WHERE id_producto = :id_producto
-        ");
-        $stmt->execute($data);
-    }
+    $data[":id_producto"] = $idProducto;
+
+    $stmt = $this->pdo->prepare("
+        UPDATE productos SET
+            id_categoria = :id_categoria,
+            nombre = :nombre,
+            descripcion_corta = :descripcion_corta,
+            descripcion_larga = :descripcion_larga,
+            precio = :precio,
+            precio_oferta = :precio_oferta,
+            sku = :sku,
+            aplica_iva = :aplica_iva,
+            stock_minimo = :stock_minimo
+        WHERE id_producto = :id_producto
+    ");
+
+    $stmt->execute($data);
+}
+
 
     public function setActivo(int $idProducto, int $activo): void {
         $stmt = $this->pdo->prepare("UPDATE productos SET activo = ? WHERE id_producto = ?");
@@ -158,4 +225,28 @@ class AdminProductoDAO {
         $stmt = $this->pdo->prepare("DELETE FROM promocion_productos WHERE id_producto = ?");
         $stmt->execute([$idProducto]);
     }
+    
+    
+public function insertarInventarioConStock(int $idProducto, int $stock): void
+{
+    // DEBUG: registrar el id que llega a inventario
+    file_put_contents(
+        __DIR__ . "/debug_inventario.log",
+        date("Y-m-d H:i:s") . " | insertarInventarioConStock | idProducto=" . $idProducto . " | stock=" . $stock . PHP_EOL,
+        FILE_APPEND
+    );
+
+    if ($idProducto <= 0) {
+        throw new Exception("❌ ID de producto inválido para inventario: " . $idProducto);
+    }
+
+    $stmt = $this->pdo->prepare("
+        INSERT INTO inventario (id_producto, stock_actual, ubicacion_almacen, ultima_actualizacion)
+        VALUES (?, ?, 'Bodega principal', NOW())
+    ");
+    $stmt->execute([$idProducto, $stock]);
+}
+
+
+
 }

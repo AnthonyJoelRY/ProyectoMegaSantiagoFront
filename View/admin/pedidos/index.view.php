@@ -1,8 +1,15 @@
 <?php $seccionActiva = "pedidos"; ?>
 
+<?php
+// ✅ Asegurar que $pedidos siempre sea un array (evita warnings/500 en PHP 8)
+$pedidos = is_array($pedidos ?? null) ? $pedidos : [];
+?>
 
-
-
+<?php
+// ✅ Asegurar sesión para saber rol
+if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
+$__rol = isset($_SESSION["rol"]) ? (int)$_SESSION["rol"] : 0;
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -46,7 +53,6 @@
                     </div>
                 </form>
 
-
                 <div class="card shadow-sm rounded-4 border-0 bg-white">
                     <div class="card-body">
 
@@ -63,7 +69,7 @@
                             </thead>
 
                             <tbody>
-                                <?php if (count($pedidos) === 0): ?>
+                                <?php if (empty($pedidos)): ?>
                                     <tr>
                                         <td colspan="6" class="text-center text-muted">
                                             No hay pedidos registrados
@@ -75,25 +81,53 @@
                                             <td><?= $p["id_pedido"] ?></td>
                                             <td><?= htmlspecialchars($p["cliente"]) ?></td>
                                             <td><?= date("d/m/Y H:i", strtotime($p["fecha_pedido"])) ?></td>
-                                            <td>$<?= number_format($p["total_pagar"], 2) ?></td>
+                                            <td>$<?= number_format((float)$p["total_pagar"], 2) ?></td>
                                             <td>
                                                 <?php
-                                                $colorEstado = match ($p["estado"]) {
-                                                    "pendiente" => "warning",
-                                                    "pagado"    => "success",
-                                                    "enviado"   => "info",
-                                                    "entregado" => "primary",
-                                                    "cancelado" => "danger",
-                                                    default     => "secondary"
+                                                $estado = (string)($p["estado"] ?? "");
+                                                $tipoEntrega = (string)($p["tipo_entrega"] ?? "envio");
+
+                                                $colorEstado = match ($estado) {
+                                                    "pendiente"           => "warning",
+                                                    "pagado"              => "success",
+                                                    "en_proceso"          => "secondary",
+                                                    "listo_para_entregar" => "info",
+                                                    "en_camino"           => "info",
+                                                    "entregado"           => "primary",
+                                                    "cancelado"           => "danger",
+                                                    default               => "secondary"
                                                 };
                                                 ?>
-                                                <span class="badge bg-<?= $colorEstado ?>">
-                                                    <?= htmlspecialchars($p["estado"]) ?>
-                                                </span>
+                                                <div class="d-flex flex-column gap-2">
+                                                    <span class="badge bg-<?= $colorEstado ?>">
+                                                        <?= htmlspecialchars($estado) ?>
+                                                    </span>
 
+                                                    <?php if ($__rol === 4 || $__rol === 1): ?>
+                                                        <?php
+                                                        $__estados = ($tipoEntrega === "retiro_local")
+                                                            ? ["en_proceso" => "En proceso", "listo_para_entregar" => "Listo para entregar"]
+                                                            : ["en_proceso" => "En proceso", "en_camino" => "En camino", "entregado" => "Entregado"];
+                                                        ?>
+                                                        <form method="POST"
+                                                            action="<?= PROJECT_BASE ?>/panel/pedidos/estado"
+                                                            class="d-flex gap-2 align-items-center">
+                                                            <input type="hidden" name="id_pedido" value="<?= (int)$p["id_pedido"] ?>">
+                                                            <input type="hidden" name="redirect_to" value="<?= PROJECT_BASE ?>/panel/pedidos">
+                                                            <select name="estado" class="form-select form-select-sm" style="max-width:220px;">
+                                                                <?php foreach ($__estados as $k => $label): ?>
+                                                                    <option value="<?= htmlspecialchars($k) ?>" <?= ($estado === $k) ? "selected" : "" ?>>
+                                                                        <?= htmlspecialchars($label) ?>
+                                                                    </option>
+                                                                <?php endforeach; ?>
+                                                            </select>
+                                                            <button class="btn btn-sm btn-outline-success" type="submit">Guardar</button>
+                                                        </form>
+                                                    <?php endif; ?>
+                                                </div>
                                             </td>
                                             <td class="text-center">
-                                                <a href="<?= PROJECT_BASE ?>/panel/pedidos/ver?id=<?= $p["id_pedido"] ?>"
+                                                <a href="<?= PROJECT_BASE ?>/panel/pedidos/ver?id=<?= (int)$p["id_pedido"] ?>"
                                                     class="btn btn-sm btn-outline-primary">
                                                     👁️
                                                 </a>
@@ -106,7 +140,6 @@
 
                     </div>
                 </div>
-
 
             </main>
         </div>

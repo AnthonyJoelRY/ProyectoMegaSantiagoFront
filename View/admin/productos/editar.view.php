@@ -124,6 +124,34 @@
                                     </label>
                                 </div>
                             </div>
+                            
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Stock actual</label>
+        <input
+            type="number"
+            name="stock"
+            class="form-control"
+            min="0"
+            value="<?= (int)($producto["stock_actual"] ?? 0) ?>"
+            required
+        >
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Stock mínimo</label>
+        <input
+            type="number"
+            name="stock_minimo"
+            class="form-control"
+            min="0"
+            value="<?= (int)($producto["stock_minimo"] ?? 0) ?>"
+            required
+        >
+    </div>
+</div>
+
+
 
                             <!-- DESCRIPCIÓN CORTA -->
                             <div class="col-md-12 mb-3">

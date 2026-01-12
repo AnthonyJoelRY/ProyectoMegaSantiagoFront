@@ -184,6 +184,48 @@
                         </table>
                     </div>
                 </div>
+                
+                <div class="card shadow-sm mt-4 border-danger">
+    <div class="card-body">
+        <h5 class="fw-bold mb-3 text-danger">❌ Productos sin stock</h5>
+
+        <table class="table table-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Producto</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody id="tablaProductosSinStock">
+                <tr>
+                    <td colspan="2" class="text-muted text-center">Cargando...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+                <div class="card shadow-sm mt-4 border-warning">
+    <div class="card-body">
+        <h5 class="fw-bold mb-3 text-warning">⚠️ Productos con stock bajo (MENOR A 15 EN STOCK)</h5>
+
+        <table class="table table-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Producto</th>
+                    <th>Stock actual</th>
+                    <th>Stock mínimo</th>
+                </tr>
+            </thead>
+            <tbody id="tablaProductosStockBajo">
+                <tr>
+                    <td colspan="3" class="text-muted text-center">Cargando...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 
             </main>
         </div>
@@ -277,6 +319,50 @@
                     tbody.innerHTML += `<tr><td>${r.cliente}</td><td>${r.total_pedidos}</td><td>$${Number(r.total_gastado).toFixed(2)}</td></tr>`;
                 });
             });
+        
+        fetch(API + "?accion=productosSinStock")
+    .then(r => r.json())
+    .then(rows => {
+        const tbody = document.getElementById("tablaProductosSinStock");
+        tbody.innerHTML = "";
+
+        if (!rows.length) {
+            tbody.innerHTML = `<tr><td colspan="2" class="text-center text-muted">Todo en stock 🎉</td></tr>`;
+            return;
+        }
+
+        rows.forEach(p => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${p.nombre}</td>
+                    <td class="text-danger fw-bold">${p.stock_actual}</td>
+                </tr>
+            `;
+        });
+    });
+
+        fetch(API + "?accion=productosStockBajo")
+    .then(r => r.json())
+    .then(rows => {
+        const tbody = document.getElementById("tablaProductosStockBajo");
+        tbody.innerHTML = "";
+
+        if (!rows.length) {
+            tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted">Sin alertas 👍</td></tr>`;
+            return;
+        }
+
+        rows.forEach(p => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${p.nombre}</td>
+                    <td class="fw-bold">${p.stock_actual}</td>
+                    <td>${p.stock_minimo}</td>
+                </tr>
+            `;
+        });
+    });
+
     </script>
 
 </body>

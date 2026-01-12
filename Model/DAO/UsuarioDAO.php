@@ -11,22 +11,25 @@ class UsuarioDAO
 
     public function existePorEmail(string $email): bool
     {
-        $stmt = $this->pdo->prepare(
-            "SELECT 1 FROM usuarios WHERE email = ? LIMIT 1"
-        );
+        $stmt = $this->pdo->prepare("SELECT 1 FROM usuarios WHERE email = ? LIMIT 1");
         $stmt->execute([$email]);
 
-        // Más eficiente que traer id_usuario
         return (bool)$stmt->fetchColumn();
     }
 
-    public function crear(int $idRol, string $email, string $claveHash): int
-    {
+    // ✅ AHORA guarda nombre y apellido
+    public function crear(
+        int $idRol,
+        string $nombre,
+        string $apellido,
+        string $email,
+        string $claveHash
+    ): int {
         $stmt = $this->pdo->prepare("
-            INSERT INTO usuarios (id_rol, email, clave_hash, activo)
-            VALUES (?, ?, ?, 1)
+            INSERT INTO usuarios (id_rol, nombre, apellido, email, clave_hash, activo)
+            VALUES (?, ?, ?, ?, ?, 1)
         ");
-        $stmt->execute([$idRol, $email, $claveHash]);
+        $stmt->execute([$idRol, $nombre, $apellido, $email, $claveHash]);
 
         return (int)$this->pdo->lastInsertId();
     }
@@ -36,7 +39,6 @@ class UsuarioDAO
         $stmt = $this->pdo->prepare("SELECT * FROM usuarios WHERE email = ? LIMIT 1");
         $stmt->execute([$email]);
 
-        // Fuerza array asociativo para que fromRow funcione siempre
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $row ? Usuario::fromRow($row) : null;
